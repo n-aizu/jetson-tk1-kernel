@@ -47,6 +47,10 @@ struct usb_udc {
 static struct class *udc_class;
 static LIST_HEAD(udc_list);
 static DEFINE_MUTEX(udc_lock);
+#ifndef CONFIG_ANDROID
+static int connect_at_bind = 1;
+module_param(connect_at_bind, int, S_IRUGO | S_IWUSR);
+#endif
 
 /* ------------------------------------------------------------------------- */
 
@@ -344,6 +348,11 @@ static int udc_bind_to_driver(struct usb_udc *udc, struct usb_gadget_driver *dri
 	 *
 	 * usb_gadget_connect(udc->gadget);
 	 */
+#ifndef CONFIG_ANDROID
+	/* connect_at_bind is for compatibility */
+	if (connect_at_bind)
+		usb_gadget_connect(udc->gadget);
+#endif
 
 	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
 	return 0;
