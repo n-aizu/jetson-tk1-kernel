@@ -87,6 +87,7 @@ struct tegra_otg {
 	bool support_usb_id;
 	bool support_pmu_id;
 	bool support_gpio_id;
+	bool pmu_id_ignore_vbus;
 	int id_det_gpio;
 	struct extcon_dev *id_extcon_dev;
 	struct extcon_dev *vbus_extcon_dev;
@@ -238,7 +239,7 @@ static unsigned long enable_interrupt(struct tegra_otg *tegra, bool en)
 		}
 
 		/* Enable vbus interrupt if cable is not detected through PMU */
-		if (!tegra->support_pmu_vbus) {
+		if (!tegra->support_pmu_vbus && !tegra->pmu_id_ignore_vbus) {
 			val |= USB_VBUS_INT_EN | USB_VBUS_WAKEUP_EN;
 			tegra->int_mask |= USB_VBUS_INT_STS_MASK;
 		}
@@ -419,10 +420,22 @@ static void tegra_change_otg_state(struct tegra_otg *tegra,
 				tegra_otg_start_gadget(tegra, 1);
 			else if (to == OTG_STATE_A_HOST)
 				tegra_otg_start_host(tegra, 1);
-		} else if (from == OTG_STATE_A_HOST && to == OTG_STATE_A_SUSPEND) {
-			tegra_otg_start_host(tegra, 0);
-		} else if (from == OTG_STATE_B_PERIPHERAL && otg->gadget && to == OTG_STATE_A_SUSPEND) {
-			tegra_otg_start_gadget(tegra, 0);
+		} else if (tegra->pmu_id_ignore_vbus) {
+			if (from == OTG_STATE_A_HOST) {
+				tegra_otg_start_host(tegra, 0);
+				if (to == OTG_STATE_B_PERIPHERAL && otg->gadget)
+					tegra_otg_start_gadget(tegra, 1);
+			} else if (from == OTG_STATE_B_PERIPHERAL && otg->gadget) {
+				tegra_otg_start_gadget(tegra, 0);
+				if (to == OTG_STATE_A_HOST)
+					tegra_otg_start_host(tegra, 1);
+			}
+		} else {
+			if (from == OTG_STATE_A_HOST && to == OTG_STATE_A_SUSPEND) {
+				tegra_otg_start_host(tegra, 0);
+			} else if (from == OTG_STATE_B_PERIPHERAL && otg->gadget && to == OTG_STATE_A_SUSPEND) {
+				tegra_otg_start_gadget(tegra, 0);
+			}
 		}
 	}
 
@@ -472,7 +485,8 @@ static void irq_work(struct work_struct *work)
 
 	if (!(status & USB_ID_STATUS) && (status & USB_ID_INT_EN))
 		to = OTG_STATE_A_HOST;
-	else if (status & USB_VBUS_STATUS && from != OTG_STATE_A_HOST)
+	else if ((status & USB_VBUS_STATUS && from != OTG_STATE_A_HOST) ||
+				((status & USB_ID_STATUS) && tegra->pmu_id_ignore_vbus))
 		to = OTG_STATE_B_PERIPHERAL;
 	else
 		to = OTG_STATE_A_SUSPEND;
@@ -531,7 +545,7 @@ static int tegra_otg_set_peripheral(struct usb_otg *otg,
 	tegra->suspended = false;
 
 	if (((val & USB_ID_STATUS) || tegra->support_pmu_id) &&
-		 (val & USB_VBUS_STATUS) && !tegra->support_pmu_vbus)
+		 (val & USB_VBUS_STATUS) && (!tegra->support_pmu_vbus && !tegra->pmu_id_ignore_vbus))
 		val |= USB_VBUS_INT_STATUS;
 	else if (!(val & USB_ID_STATUS)) {
 		if (tegra->support_usb_id)
@@ -682,6 +696,8 @@ void tegra_otg_set_id_detection_type(struct tegra_otg *tegra)
 	case TEGRA_USB_ID:
 		tegra->support_usb_id = true;
 		break;
+	case TEGRA_USB_PMU_ID_NOVBUS:
+		tegra->pmu_id_ignore_vbus = true;
 	case TEGRA_USB_PMU_ID:
 		tegra->support_pmu_id = true;
 		break;
@@ -848,14 +864,16 @@ static int tegra_otg_start(struct platform_device *pdev)
 		goto err_irq;
 	}
 
-	tegra->irq = res->start;
-	err = devm_request_threaded_irq(&pdev->dev, tegra->irq, tegra_otg_irq,
-				   NULL,
-				   IRQF_SHARED | IRQF_TRIGGER_HIGH,
-				   "tegra-otg", tegra);
-	if (err) {
-		dev_err(&pdev->dev, "Failed to register IRQ\n");
-		goto err_irq;
+	if (!tegra->pmu_id_ignore_vbus) {
+		tegra->irq = res->start;
+		err = devm_request_threaded_irq(&pdev->dev, tegra->irq, tegra_otg_irq,
+					   NULL,
+					   IRQF_SHARED | IRQF_TRIGGER_HIGH,
+					   "tegra-otg", tegra);
+		if (err) {
+			dev_err(&pdev->dev, "Failed to register IRQ\n");
+			goto err_irq;
+		}
 	}
 
 	if (tegra->support_gpio_id && gpio_is_valid(tegra->id_det_gpio)) {
@@ -1092,7 +1110,7 @@ static void tegra_otg_resume(struct device *dev)
 	}
 	/* Detect cable status after LP0 for all detection types */
 
-	if (tegra->support_usb_id || !tegra->support_pmu_vbus) {
+	if (tegra->support_usb_id || (!tegra->support_pmu_vbus && !tegra->pmu_id_ignore_vbus)) {
 		/* Clear pending interrupts  */
 		pm_runtime_get_sync(dev);
 		clk_prepare_enable(tegra->clk);
@@ -1106,7 +1124,7 @@ static void tegra_otg_resume(struct device *dev)
 		spin_lock_irqsave(&tegra->lock, flags);
 		if (tegra->support_usb_id)
 			val |= USB_ID_INT_EN | USB_ID_PIN_WAKEUP_EN;
-		if (!tegra->support_pmu_vbus)
+		if (!tegra->support_pmu_vbus && !tegra->pmu_id_ignore_vbus)
 			val |= USB_VBUS_INT_EN | USB_VBUS_WAKEUP_EN;
 		tegra->int_status = val;
 		spin_unlock_irqrestore(&tegra->lock, flags);

@@ -240,6 +240,13 @@ config TEGRA_SIMULATION_SPLIT_MEM
           setup. Select this only if you are an NVIDIA developer
           working on a simulation platform.
 
+config TEGRA_USB_PMUID_WORKAROUND
+	bool "Tegra USB OTG Driver VBUS workaround"
+	depends on MACH_ARDBEG
+	help
+	  Enable workaround for Tegra board which is self-powered and does
+	  not connected to host VBUS at USB gadget mode.
+
 config FIQ_DEBUGGER
 	bool "FIQ Mode Serial Debugger"
 	select FIQ

@@ -715,6 +715,11 @@ static void ardbeg_usb_init(void)
 							true;
 	}
 
+#ifdef CONFIG_TEGRA_USB_PMUID_WORKAROUND
+	if (tegra_ehci1_utmi_pdata.id_det_type == TEGRA_USB_PMU_ID)
+		tegra_ehci1_utmi_pdata.id_det_type = TEGRA_USB_PMU_ID_NOVBUS;
+#endif
+
 	if (!(usb_port_owner_info & UTMI1_PORT_OWNER_XUSB)) {
 		tegra_otg_pdata.is_xhci = false;
 		tegra_udc_pdata.u_data.dev.is_xhci = false;
