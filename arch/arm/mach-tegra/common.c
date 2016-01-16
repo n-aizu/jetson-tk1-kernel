@@ -2519,32 +2519,38 @@ u32 tegra_read_pmc_reg(int offset)
 {
 	return readl(IO_ADDRESS(TEGRA_PMC_BASE) + offset);
 }
+EXPORT_SYMBOL(tegra_read_pmc_reg);
 
 u32 tegra_read_clk_ctrl_reg(int offset)
 {
 	return readl(IO_ADDRESS(TEGRA_CLK_RESET_BASE) + offset);
 }
+EXPORT_SYMBOL(tegra_read_clk_ctrl_reg);
 
 u32 tegra_read_apb_misc_reg(int offset)
 {
 	return readl(IO_ADDRESS(TEGRA_APB_MISC_BASE) + offset);
 }
+EXPORT_SYMBOL(tegra_read_apb_misc_reg);
 
 u32 tegra_fuse_readl(unsigned long offset)
 {
 	return readl(IO_ADDRESS(TEGRA_FUSE_BASE + offset));
 }
+EXPORT_SYMBOL(tegra_fuse_readl);
 
 void tegra_fuse_writel(u32 val, unsigned long offset)
 {
 	writel(val, IO_ADDRESS(TEGRA_FUSE_BASE + offset));
 }
+EXPORT_SYMBOL(tegra_fuse_writel);
 
 u32 tegra_read_chipid(void)
 {
 	return readl_relaxed(IO_ADDRESS(TEGRA_APB_MISC_BASE)
 			+ 0x804);
 }
+EXPORT_SYMBOL(tegra_read_chipid);
 
 static void tegra_set_sku_id(void)
 {
