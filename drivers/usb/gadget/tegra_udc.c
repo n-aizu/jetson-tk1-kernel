@@ -2346,7 +2346,7 @@ static int reset_queues(struct tegra_udc *udc)
 
 	/* report disconnect; the driver is already quiesced */
 	spin_unlock(&udc->lock);
-	if (udc->driver && udc->driver->disconnect)
+	if (udc->driver && udc->driver->disconnect && udc->report_disconnect)
 		udc->driver->disconnect(&udc->gadget);
 	spin_lock(&udc->lock);
 
@@ -2619,6 +2619,8 @@ static int tegra_udc_start(struct usb_gadget *g,
 	udc->driver = driver;
 	spin_unlock_irqrestore(&udc->lock, flags);
 
+	udc->report_disconnect = 1;
+
 	/* Enable DR IRQ reg and Set usbcmd reg  Run bit */
 	if (vbus_enabled(udc) && !(udc->transceiver
 			&& udc->transceiver->state != OTG_STATE_B_PERIPHERAL))
@@ -2641,6 +2643,7 @@ static int tegra_udc_stop(struct usb_gadget *g,
 
 	DBG("%s(%d) BEGIN\n", __func__, __LINE__);
 
+	udc->report_disconnect = 0;
 	tegra_vbus_session(&udc->gadget, 0);
 
 	/* stand operation */

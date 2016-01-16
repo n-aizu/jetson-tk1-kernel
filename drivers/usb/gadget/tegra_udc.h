@@ -474,6 +474,7 @@ struct tegra_udc {
 	unsigned stopped:1;
 	unsigned remote_wakeup:1;
 	unsigned selfpowered:1;
+	unsigned report_disconnect:1;
 	bool has_hostpc;
 	bool support_pmu_vbus;
 	bool fence_read;
