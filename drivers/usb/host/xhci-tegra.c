@@ -180,6 +180,16 @@ struct tegra_xhci_hcd {
 
 static struct hc_driver __read_mostly tegra_xhci_hc_driver;
 
+static int tegra_xhci_setup(struct usb_hcd *hcd);
+static int tegra_xhci_start(struct usb_hcd *hcd);
+
+static const struct xhci_driver_overrides xhci_tegra_overrides __initconst = {
+	.extra_priv_size = sizeof(struct xhci_hcd),
+	.reset = tegra_xhci_setup,
+	.start = tegra_xhci_start,
+};
+
+
 static inline struct tegra_xhci_hcd *
 mbox_work_to_tegra(struct work_struct *work)
 {
@@ -571,6 +581,11 @@ static int tegra_xhci_setup(struct usb_hcd *hcd)
 	return xhci_gen_setup(hcd, tegra_xhci_quirks);
 }
 
+static int tegra_xhci_start(struct usb_hcd *hcd)
+{
+	return xhci_run(hcd);
+}
+
 static const char * const tegra124_supply_names[] = {
 	"avddio-pex",
 	"dvddio-pex",
@@ -931,7 +946,7 @@ static struct platform_driver tegra_xhci_driver = {
 
 static int __init tegra_xhci_init(void)
 {
-	xhci_init_driver(&tegra_xhci_hc_driver, tegra_xhci_setup);
+	xhci_init_driver(&tegra_xhci_hc_driver, &xhci_tegra_overrides);
 	return platform_driver_register(&tegra_xhci_driver);
 }
 module_init(tegra_xhci_init);
