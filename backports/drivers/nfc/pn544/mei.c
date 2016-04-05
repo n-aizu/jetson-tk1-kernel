@@ -67,7 +67,13 @@ static int pn544_mei_remove(struct mei_cl_device *cldev)
 }
 
 static struct mei_cl_device_id pn544_mei_tbl[] = {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,4,0)
 	{ PN544_DRIVER_NAME, MEI_NFC_UUID, MEI_CL_VERSION_ANY},
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(4,2,0)
+	{ PN544_DRIVER_NAME, MEI_NFC_UUID},
+#else
+	{ PN544_DRIVER_NAME},
+#endif
 
 	/* required last entry */
 	{ }
