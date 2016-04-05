@@ -639,7 +639,7 @@ nl802154_dump_wpan_phy(struct sk_buff *skb, struct netlink_callback *cb)
 		ret = nl802154_send_wpan_phy(rdev,
 					     NL802154_CMD_NEW_WPAN_PHY,
 					     skb,
-					     NETLINK_CB(cb->skb).portid,
+					     NETLINK_CB_PORTID(cb->skb),
 					     cb->nlh->nlmsg_seq, NLM_F_MULTI);
 		if (ret < 0) {
 			if ((ret == -ENOBUFS || ret == -EMSGSIZE) &&
@@ -676,7 +676,7 @@ static int nl802154_get_wpan_phy(struct sk_buff *skb, struct genl_info *info)
 		return -ENOMEM;
 
 	if (nl802154_send_wpan_phy(rdev, NL802154_CMD_NEW_WPAN_PHY, msg,
-				   info->snd_portid, info->snd_seq, 0) < 0) {
+				   genl_info_snd_portid(info), info->snd_seq, 0) < 0) {
 		nlmsg_free(msg);
 		return -ENOBUFS;
 	}
@@ -879,7 +879,7 @@ nl802154_dump_interface(struct sk_buff *skb, struct netlink_callback *cb)
 				if_idx++;
 				continue;
 			}
-			if (nl802154_send_iface(skb, NETLINK_CB(cb->skb).portid,
+			if (nl802154_send_iface(skb, NETLINK_CB_PORTID(cb->skb),
 						cb->nlh->nlmsg_seq, NLM_F_MULTI,
 						rdev, wpan_dev) < 0) {
 				goto out;
@@ -908,7 +908,7 @@ static int nl802154_get_interface(struct sk_buff *skb, struct genl_info *info)
 	if (!msg)
 		return -ENOMEM;
 
-	if (nl802154_send_iface(msg, info->snd_portid, info->snd_seq, 0,
+	if (nl802154_send_iface(msg, genl_info_snd_portid(info), info->snd_seq, 0,
 				rdev, wdev) < 0) {
 		nlmsg_free(msg);
 		return -ENOBUFS;
@@ -1487,7 +1487,7 @@ nl802154_dump_llsec_key(struct sk_buff *skb, struct netlink_callback *cb)
 
 	list_for_each_entry(key, &table->keys, list) {
 		if (nl802154_send_key(skb, NL802154_CMD_NEW_SEC_KEY,
-				      NETLINK_CB(cb->skb).portid,
+				      NETLINK_CB_PORTID(cb->skb),
 				      cb->nlh->nlmsg_seq, NLM_F_MULTI,
 				      rdev, wpan_dev->netdev, key) < 0) {
 			/* TODO */
@@ -1657,7 +1657,7 @@ nl802154_dump_llsec_dev(struct sk_buff *skb, struct netlink_callback *cb)
 
 	list_for_each_entry(dev, &table->devices, list) {
 		if (nl802154_send_device(skb, NL802154_CMD_NEW_SEC_LEVEL,
-					 NETLINK_CB(cb->skb).portid,
+					 NETLINK_CB_PORTID(cb->skb),
 					 cb->nlh->nlmsg_seq, NLM_F_MULTI,
 					 rdev, wpan_dev->netdev, dev) < 0) {
 			/* TODO */
@@ -1832,7 +1832,7 @@ nl802154_dump_llsec_devkey(struct sk_buff *skb, struct netlink_callback *cb)
 		list_for_each_entry(kpos, &dpos->keys, list) {
 			if (nl802154_send_devkey(skb,
 						 NL802154_CMD_NEW_SEC_LEVEL,
-						 NETLINK_CB(cb->skb).portid,
+						 NETLINK_CB_PORTID(cb->skb),
 						 cb->nlh->nlmsg_seq,
 						 NLM_F_MULTI, rdev,
 						 wpan_dev->netdev,
@@ -1994,7 +1994,7 @@ nl802154_dump_llsec_seclevel(struct sk_buff *skb, struct netlink_callback *cb)
 
 	list_for_each_entry(sl, &table->security_levels, list) {
 		if (nl802154_send_seclevel(skb, NL802154_CMD_NEW_SEC_LEVEL,
-					   NETLINK_CB(cb->skb).portid,
+					   NETLINK_CB_PORTID(cb->skb),
 					   cb->nlh->nlmsg_seq, NLM_F_MULTI,
 					   rdev, wpan_dev->netdev, sl) < 0) {
 			/* TODO */
