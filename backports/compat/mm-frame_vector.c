@@ -6,6 +6,7 @@
 #include <linux/vmalloc.h>
 #include <linux/pagemap.h>
 #include <linux/sched.h>
+#include <linux/export.h>
 
 /**
  * get_vaddr_frames() - map virtual addresses to pfns
