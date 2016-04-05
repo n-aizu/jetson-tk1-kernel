@@ -247,10 +247,16 @@ static int igb_get_settings(struct net_device *netdev, struct ethtool_cmd *ecmd)
 	else
 		ecmd->eth_tp_mdix = ETH_TP_MDI_INVALID;
 
-	if (hw->phy.mdix == AUTO_ALL_MODES)
+	if (hw->phy.mdix == AUTO_ALL_MODES) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
 		ecmd->eth_tp_mdix_ctrl = ETH_TP_MDI_AUTO;
-	else
+#endif /* if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0) */
+	}
+	else {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
 		ecmd->eth_tp_mdix_ctrl = hw->phy.mdix;
+#endif /* if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0) */
+	}
 
 	return 0;
 }
@@ -273,6 +279,7 @@ static int igb_set_settings(struct net_device *netdev, struct ethtool_cmd *ecmd)
 	 * some hardware doesn't allow MDI setting when speed or
 	 * duplex is forced.
 	 */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
 	if (ecmd->eth_tp_mdix_ctrl) {
 		if (hw->phy.media_type != e1000_media_type_copper)
 			return -EOPNOTSUPP;
@@ -283,6 +290,7 @@ static int igb_set_settings(struct net_device *netdev, struct ethtool_cmd *ecmd)
 			return -EINVAL;
 		}
 	}
+#endif /* if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0) */
 
 	while (test_and_set_bit(__IGB_RESETTING, &adapter->state))
 		usleep_range(1000, 2000);
@@ -327,6 +335,7 @@ static int igb_set_settings(struct net_device *netdev, struct ethtool_cmd *ecmd)
 	}
 
 	/* MDI-X => 2; MDI => 1; Auto => 3 */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
 	if (ecmd->eth_tp_mdix_ctrl) {
 		/* fix up the value for auto (3 => 0) as zero is mapped
 		 * internally to auto
@@ -336,6 +345,7 @@ static int igb_set_settings(struct net_device *netdev, struct ethtool_cmd *ecmd)
 		else
 			hw->phy.mdix = ecmd->eth_tp_mdix_ctrl;
 	}
+#endif /* if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0) */
 
 	/* reset the link */
 	if (netif_running(adapter->netdev)) {
