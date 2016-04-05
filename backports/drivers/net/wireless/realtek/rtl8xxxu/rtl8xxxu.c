@@ -5967,7 +5967,9 @@ static struct usb_driver rtl8xxxu_driver = {
 	.probe = rtl8xxxu_probe,
 	.disconnect = rtl8xxxu_disconnect,
 	.id_table = dev_table,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0))
 	.disable_hub_initiated_lpm = 1,
+#endif
 };
 
 static int __init rtl8xxxu_module_init(void)

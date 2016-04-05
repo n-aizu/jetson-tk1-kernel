@@ -357,6 +357,8 @@ static struct usb_driver mt7601u_driver = {
 	.resume		= mt7601u_resume,
 	.reset_resume	= mt7601u_resume,
 	.soft_unbind	= 1,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0))
 	.disable_hub_initiated_lpm = 1,
+#endif
 };
 module_usb_driver(mt7601u_driver);
