@@ -206,7 +206,9 @@ static const struct dev_pm_ops igb_pm_ops = {
 };
 #endif
 static void igb_shutdown(struct pci_dev *);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
 static int igb_pci_sriov_configure(struct pci_dev *dev, int num_vfs);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0) */
 #ifdef CONFIG_IGB_DCA
 static int igb_notify_dca(struct notifier_block *, unsigned long, void *);
 static struct notifier_block dca_notifier = {
@@ -247,7 +249,9 @@ static struct pci_driver igb_driver = {
 	.driver.pm = &igb_pm_ops,
 #endif
 	.shutdown = igb_shutdown,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
 	.sriov_configure = igb_pci_sriov_configure,
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0) */
 	.err_handler = &igb_err_handler
 };
 
@@ -7591,6 +7595,7 @@ out:
 }
 
 #endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
 static int igb_pci_sriov_configure(struct pci_dev *dev, int num_vfs)
 {
 #ifdef CONFIG_PCI_IOV
@@ -7601,6 +7606,7 @@ static int igb_pci_sriov_configure(struct pci_dev *dev, int num_vfs)
 #endif
 	return 0;
 }
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0) */
 
 #ifdef CONFIG_NET_POLL_CONTROLLER
 /* Polling 'interrupt' - used by things like netconsole to send skbs
