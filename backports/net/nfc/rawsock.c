@@ -246,6 +246,12 @@ static int rawsock_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
 
 	return len;
 }
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0)
+static int backport_rawsock_sendmsg(struct kiocb *iocb, struct socket *sock,
+				    struct msghdr *msg, size_t len){
+	return rawsock_sendmsg(sock, msg, len);
+}
+#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0) */
 
 static int rawsock_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
 			   int flags)
@@ -274,6 +280,12 @@ static int rawsock_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
 
 	return rc ? : copied;
 }
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0)
+static int backport_rawsock_recvmsg(struct kiocb *iocb, struct socket *sock,
+				    struct msghdr *msg, size_t len, int flags){
+	return rawsock_recvmsg(sock, msg, len, flags);
+}
+#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0) */
 
 static const struct proto_ops rawsock_ops = {
 	.family         = PF_NFC,
@@ -290,8 +302,16 @@ static const struct proto_ops rawsock_ops = {
 	.shutdown       = sock_no_shutdown,
 	.setsockopt     = sock_no_setsockopt,
 	.getsockopt     = sock_no_getsockopt,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0)
 	.sendmsg        = rawsock_sendmsg,
+#else
+	.sendmsg = backport_rawsock_sendmsg,
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0) */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0)
 	.recvmsg        = rawsock_recvmsg,
+#else
+	.recvmsg = backport_rawsock_recvmsg,
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0) */
 	.mmap           = sock_no_mmap,
 };
 
@@ -311,7 +331,11 @@ static const struct proto_ops rawsock_raw_ops = {
 	.setsockopt     = sock_no_setsockopt,
 	.getsockopt     = sock_no_getsockopt,
 	.sendmsg        = sock_no_sendmsg,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0)
 	.recvmsg        = rawsock_recvmsg,
+#else
+	.recvmsg = backport_rawsock_recvmsg,
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0) */
 	.mmap           = sock_no_mmap,
 };
 

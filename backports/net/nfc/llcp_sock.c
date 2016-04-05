@@ -792,6 +792,12 @@ static int llcp_sock_sendmsg(struct socket *sock, struct msghdr *msg,
 
 	return nfc_llcp_send_i_frame(llcp_sock, msg, len);
 }
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0)
+static int backport_llcp_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
+				      struct msghdr *msg, size_t len){
+	return llcp_sock_sendmsg(sock, msg, len);
+}
+#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0) */
 
 static int llcp_sock_recvmsg(struct socket *sock, struct msghdr *msg,
 			     size_t len, int flags)
@@ -882,6 +888,13 @@ done:
 
 	return copied;
 }
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0)
+static int backport_llcp_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
+				      struct msghdr *msg, size_t len,
+				      int flags){
+	return llcp_sock_recvmsg(sock, msg, len, flags);
+}
+#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0) */
 
 static const struct proto_ops llcp_sock_ops = {
 	.family         = PF_NFC,
@@ -898,8 +911,16 @@ static const struct proto_ops llcp_sock_ops = {
 	.shutdown       = sock_no_shutdown,
 	.setsockopt     = nfc_llcp_setsockopt,
 	.getsockopt     = nfc_llcp_getsockopt,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0)
 	.sendmsg        = llcp_sock_sendmsg,
+#else
+	.sendmsg = backport_llcp_sock_sendmsg,
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0) */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0)
 	.recvmsg        = llcp_sock_recvmsg,
+#else
+	.recvmsg = backport_llcp_sock_recvmsg,
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0) */
 	.mmap           = sock_no_mmap,
 };
 
@@ -919,7 +940,11 @@ static const struct proto_ops llcp_rawsock_ops = {
 	.setsockopt     = sock_no_setsockopt,
 	.getsockopt     = sock_no_getsockopt,
 	.sendmsg        = sock_no_sendmsg,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0)
 	.recvmsg        = llcp_sock_recvmsg,
+#else
+	.recvmsg = backport_llcp_sock_recvmsg,
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0) */
 	.mmap           = sock_no_mmap,
 };
 
