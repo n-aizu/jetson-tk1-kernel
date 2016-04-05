@@ -105,6 +105,7 @@ static void __vb2_buf_userptr_put(struct vb2_buffer *vb)
 	}
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 /**
  * __vb2_plane_dmabuf_put() - release memory associated with
  * a DMABUF shared plane
@@ -135,6 +136,7 @@ static void __vb2_buf_dmabuf_put(struct vb2_buffer *vb)
 	for (plane = 0; plane < vb->num_planes; ++plane)
 		__vb2_plane_dmabuf_put(vb, &vb->planes[plane]);
 }
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 /**
  * __setup_lengths() - setup initial lengths for every plane in
@@ -274,8 +276,10 @@ static void __vb2_free_mem(struct vb2_queue *q, unsigned int buffers)
 		/* Free MMAP buffers or release USERPTR buffers */
 		if (q->memory == VB2_MEMORY_MMAP)
 			__vb2_buf_mem_free(vb);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 		else if (q->memory == VB2_MEMORY_DMABUF)
 			__vb2_buf_dmabuf_put(vb);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 		else
 			__vb2_buf_userptr_put(vb);
 	}
@@ -373,11 +377,13 @@ static int __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
 			pr_info("vb2:     attach_dmabuf: %u detach_dmabuf: %u map_dmabuf: %u unmap_dmabuf: %u\n",
 				vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf,
 				vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 			pr_info("vb2:     get_dmabuf: %u num_users: %u vaddr: %u cookie: %u\n",
 				vb->cnt_mem_get_dmabuf,
 				vb->cnt_mem_num_users,
 				vb->cnt_mem_vaddr,
 				vb->cnt_mem_cookie);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 		}
 	}
 #endif
@@ -478,6 +484,7 @@ static int __verify_mmap_ops(struct vb2_queue *q)
 	return 0;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 /**
  * __verify_dmabuf_ops() - verify that all memory operations required for
  * DMABUF queue type have been provided
@@ -491,6 +498,7 @@ static int __verify_dmabuf_ops(struct vb2_queue *q)
 
 	return 0;
 }
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 /**
  * vb2_verify_memory_type() - Check whether the memory type and buffer type
@@ -524,10 +532,12 @@ int vb2_verify_memory_type(struct vb2_queue *q,
 		return -EINVAL;
 	}
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	if (memory == VB2_MEMORY_DMABUF && __verify_dmabuf_ops(q)) {
 		dprintk(1, "DMABUF for current setup unsupported\n");
 		return -EINVAL;
 	}
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 	/*
 	 * Place the busy tests at the end: -EBUSY can be ignored when
@@ -1047,6 +1057,7 @@ err:
 	return ret;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 /**
  * __qbuf_dmabuf() - handle qbuf of a DMABUF buffer
  */
@@ -1175,6 +1186,7 @@ err:
 
 	return ret;
 }
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 /**
  * __enqueue_in_driver() - enqueue a vb2_buffer in driver for processing
@@ -1215,9 +1227,11 @@ static int __buf_prepare(struct vb2_buffer *vb, const void *pb)
 	case VB2_MEMORY_USERPTR:
 		ret = __qbuf_userptr(vb, pb);
 		break;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	case VB2_MEMORY_DMABUF:
 		ret = __qbuf_dmabuf(vb, pb);
 		break;
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 	default:
 		WARN(1, "Invalid queue type\n");
 		ret = -EINVAL;
@@ -1559,8 +1573,10 @@ EXPORT_SYMBOL_GPL(vb2_wait_for_all_buffers);
  */
 static void __vb2_dqbuf(struct vb2_buffer *vb)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	struct vb2_queue *q = vb->vb2_queue;
 	unsigned int i;
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 	/* nothing to do if the buffer is already dequeued */
 	if (vb->state == VB2_BUF_STATE_DEQUEUED)
@@ -1568,6 +1584,7 @@ static void __vb2_dqbuf(struct vb2_buffer *vb)
 
 	vb->state = VB2_BUF_STATE_DEQUEUED;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	/* unmap DMABUF buffer */
 	if (q->memory == VB2_MEMORY_DMABUF)
 		for (i = 0; i < vb->num_planes; ++i) {
@@ -1576,6 +1593,7 @@ static void __vb2_dqbuf(struct vb2_buffer *vb)
 			call_void_memop(vb, unmap_dmabuf, vb->planes[i].mem_priv);
 			vb->planes[i].dbuf_mapped = 0;
 		}
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 }
 
 /**
@@ -1831,6 +1849,7 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
 	return -EINVAL;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 /**
  * vb2_core_expbuf() - Export a buffer as a file descriptor
  * @q:		videobuf2 queue
@@ -1914,6 +1933,7 @@ int vb2_core_expbuf(struct vb2_queue *q, int *fd, unsigned int type,
 	return 0;
 }
 EXPORT_SYMBOL_GPL(vb2_core_expbuf);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 /**
  * vb2_mmap() - map video buffers into application address space

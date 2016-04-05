@@ -28,7 +28,9 @@ struct vb2_vmalloc_buf {
 	unsigned long			size;
 	atomic_t			refcount;
 	struct vb2_vmarea_handler	handler;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	struct dma_buf			*dbuf;
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 };
 
 static void vb2_vmalloc_put(void *buf_priv);

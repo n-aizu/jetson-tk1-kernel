@@ -78,8 +78,10 @@ static void *vb2_dc_vaddr(void *buf_priv)
 {
 	struct vb2_dc_buf *buf = buf_priv;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	if (!buf->vaddr && buf->db_attach)
 		buf->vaddr = dma_buf_vmap(buf->db_attach->dmabuf);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 	return buf->vaddr;
 }
@@ -253,6 +255,7 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
 }
 #endif /* (LINUX_VERSION_CODE < KERNEL_VERSION(3,9,0)) */
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 /*********************************************/
 /*         DMABUF ops for exporters          */
 /*********************************************/
@@ -425,6 +428,7 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
 
 	return sgt;
 }
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 static struct dma_buf *vb2_dc_get_dmabuf(void *buf_priv, unsigned long flags)
 {

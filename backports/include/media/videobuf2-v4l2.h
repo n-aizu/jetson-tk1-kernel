@@ -57,7 +57,9 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create);
 int vb2_prepare_buf(struct vb2_queue *q, struct v4l2_buffer *b);
 
 int vb2_qbuf(struct vb2_queue *q, struct v4l2_buffer *b);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 int vb2_expbuf(struct vb2_queue *q, struct v4l2_exportbuffer *eb);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 int vb2_dqbuf(struct vb2_queue *q, struct v4l2_buffer *b, bool nonblocking);
 
 int vb2_streamon(struct vb2_queue *q, enum v4l2_buf_type type);
@@ -123,8 +125,10 @@ int vb2_ioctl_qbuf(struct file *file, void *priv, struct v4l2_buffer *p);
 int vb2_ioctl_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p);
 int vb2_ioctl_streamon(struct file *file, void *priv, enum v4l2_buf_type i);
 int vb2_ioctl_streamoff(struct file *file, void *priv, enum v4l2_buf_type i);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 int vb2_ioctl_expbuf(struct file *file, void *priv,
 	struct v4l2_exportbuffer *p);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 /* struct v4l2_file_operations helpers */
 

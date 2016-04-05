@@ -317,9 +317,11 @@ static void *vb2_dma_sg_vaddr(void *buf_priv)
 	BUG_ON(!buf);
 
 	if (!buf->vaddr) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 		if (buf->db_attach)
 			buf->vaddr = dma_buf_vmap(buf->db_attach->dmabuf);
 		else
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 			buf->vaddr = vm_map_ram(buf->pages,
 					buf->num_pages, -1, PAGE_KERNEL);
 	}

@@ -97,7 +97,9 @@ struct vb2_mem_ops {
 				  enum dma_data_direction dma_dir,
 				  gfp_t gfp_flags);
 	void		(*put)(void *buf_priv);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	struct dma_buf *(*get_dmabuf)(void *buf_priv, unsigned long flags);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 	void		*(*get_userptr)(void *alloc_ctx, unsigned long vaddr,
 					unsigned long size,
@@ -107,12 +109,14 @@ struct vb2_mem_ops {
 	void		(*prepare)(void *buf_priv);
 	void		(*finish)(void *buf_priv);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
 	void		*(*attach_dmabuf)(void *alloc_ctx, struct dma_buf *dbuf,
 					  unsigned long size,
 					  enum dma_data_direction dma_dir);
 	void		(*detach_dmabuf)(void *buf_priv);
 	int		(*map_dmabuf)(void *buf_priv);
 	void		(*unmap_dmabuf)(void *buf_priv);
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) */
 
 	void		*(*vaddr)(void *buf_priv);
 	void		*(*cookie)(void *buf_priv);
