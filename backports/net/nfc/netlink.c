@@ -34,7 +34,7 @@
 #include "nfc.h"
 #include "llcp.h"
 
-static const struct genl_multicast_group nfc_genl_mcgrps[] = {
+static __genl_const struct genl_multicast_group nfc_genl_mcgrps[] = {
 	{ .name = NFC_GENL_MCAST_EVENT_NAME, },
 };
 
@@ -1623,7 +1623,7 @@ int nfc_vendor_cmd_reply(struct sk_buff *skb)
 }
 EXPORT_SYMBOL(nfc_vendor_cmd_reply);
 
-static const struct genl_ops nfc_genl_ops[] = {
+static __genl_const struct genl_ops nfc_genl_ops[] = {
 	{
 		.cmd = NFC_CMD_GET_DEVICE,
 		.doit = nfc_genl_get_device,
