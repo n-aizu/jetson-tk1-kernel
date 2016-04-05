@@ -33,3 +33,10 @@ compat-$(CPTCFG_KERNEL_4_4) += backport-4.4.o
 
 compat-$(CPTCFG_BPAUTO_BUILD_CRYPTO_CCM) += crypto-ccm.o
 compat-$(CPTCFG_BPAUTO_BUILD_DMA_SHARED_HELPERS) += dma-shared-helpers.o
+compat-$(CONFIG_BACKPORT_BPAUTO_BUILD_WANT_DEV_COREDUMP) += drivers-base-devcoredump.o
+compat-$(CONFIG_BACKPORT_BPAUTO_RHASHTABLE) += lib-rhashtable.o
+cordic-objs += lib-cordic.o
+obj-$(CONFIG_BACKPORT_BPAUTO_BUILD_CORDIC) += cordic.o
+compat-$(CONFIG_BACKPORT_BPAUTO_BUILD_CRYPTO_CCM) += crypto-ccm.o
+compat-$(CONFIG_BACKPORT_BPAUTO_BUILD_FRAME_VECTOR) += mm-frame_vector.o
+compat-$(CONFIG_BACKPORT_BPAUTO_BUILD_HDMI) += drivers-video-hdmi.o
