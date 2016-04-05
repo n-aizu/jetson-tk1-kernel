@@ -14,6 +14,7 @@
 #include <linux/module.h>
 
 #include <net/6lowpan.h>
+#include <linux/if_arp.h>
 
 void lowpan_netdev_setup(struct net_device *dev, enum lowpan_lltypes lltype)
 {
