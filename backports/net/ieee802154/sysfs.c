@@ -62,7 +62,12 @@ static struct attribute *pmib_attrs[] = {
 	&dev_attr_name.attr,
 	NULL,
 };
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,11,0)
 ATTRIBUTE_GROUPS(pmib);
+#else
+#define BP_ATTR_GRP_STRUCT device_attribute
+ATTRIBUTE_GROUPS_BACKPORT(pmib);
+#endif
 
 #ifdef CONFIG_PM_SLEEP
 static int wpan_phy_suspend(struct device *dev)
@@ -102,12 +107,17 @@ static SIMPLE_DEV_PM_OPS(wpan_phy_pm_ops, wpan_phy_suspend, wpan_phy_resume);
 struct class wpan_phy_class = {
 	.name = "ieee802154",
 	.dev_release = wpan_phy_release,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,11,0)
 	.dev_groups = pmib_groups,
+#else
+	.dev_attrs = pmib_dev_attrs,
+#endif
 	.pm = WPAN_PHY_PM_OPS,
 };
 
 int wpan_phy_sysfs_init(void)
 {
+	init_pmib_attrs();
 	return class_register(&wpan_phy_class);
 }
 
