@@ -359,11 +359,16 @@ static void do_neigh_solicit(struct usbnet *dev, u8 *buf, u16 tci)
 	in6_dev_put(in6_dev);
 
 	/* ipv6_stub != NULL if in6_dev_get returned an inet6_dev */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,4,0)
 	ipv6_stub->ndisc_send_na(netdev, &iph->saddr, &msg->target,
 				 is_router /* router */,
 				 true /* solicited */,
 				 false /* override */,
 				 true /* inc_opt */);
+#else
+	ipv6_stub->ndisc_send_na(netdev, NULL, &iph->saddr, &msg->target,
+				 is_router, true, false, true);
+#endif
 out:
 	dev_put(netdev);
 }
