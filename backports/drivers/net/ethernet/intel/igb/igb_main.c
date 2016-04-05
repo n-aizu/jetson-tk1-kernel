@@ -7535,6 +7535,7 @@ static int igb_sriov_reinit(struct pci_dev *dev)
 	return 0;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
 static int igb_pci_disable_sriov(struct pci_dev *dev)
 {
 	int err = igb_disable_sriov(dev);
@@ -7544,6 +7545,7 @@ static int igb_pci_disable_sriov(struct pci_dev *dev)
 
 	return err;
 }
+#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0) */
 
 static int igb_pci_enable_sriov(struct pci_dev *dev, int num_vfs)
 {
