@@ -979,6 +979,9 @@ void cfg80211_stop_iface(struct wiphy *wiphy, struct wireless_dev *wdev,
 }
 EXPORT_SYMBOL(cfg80211_stop_iface);
 
+#ifdef CONFIG_WEXT_CORE
+void wireless_nlevent_flush(void);
+#endif
 static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
 					 unsigned long state, void *ptr)
 {
@@ -1163,7 +1166,9 @@ static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
 		return NOTIFY_DONE;
 	}
 
+#ifdef CONFIG_WEXT_CORE
 	wireless_nlevent_flush();
+#endif
 
 	return NOTIFY_OK;
 }

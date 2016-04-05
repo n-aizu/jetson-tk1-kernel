@@ -65,7 +65,7 @@ config BACKPORT_IWLDVM
 config BACKPORT_IWLMVM
 	tristate "Intel Wireless WiFi MVM Firmware support"
 	depends on !IWLMVM
-	depends on WANT_DEV_COREDUMP
+	select BACKPORT_BPAUTO_WANT_DEV_COREDUMP
 	help
 	  This is the driver that supports the MVM firmware. The list
 	  of the devices that use this firmware is available here:

@@ -14,7 +14,7 @@ config BACKPORT_MWIFIEX_SDIO
 	depends on !MWIFIEX_SDIO
 	depends on BACKPORT_MWIFIEX && MMC
 	depends on FW_LOADER
-	depends on WANT_DEV_COREDUMP
+	select BACKPORT_BPAUTO_WANT_DEV_COREDUMP
 	---help---
 	  This adds support for wireless adapters based on Marvell
 	  8786/8787/8797/8887/8897/8997 chipsets with SDIO interface.
@@ -27,7 +27,7 @@ config BACKPORT_MWIFIEX_PCIE
 	depends on !MWIFIEX_PCIE
 	depends on BACKPORT_MWIFIEX && PCI
 	depends on FW_LOADER
-	depends on WANT_DEV_COREDUMP
+	select BACKPORT_BPAUTO_WANT_DEV_COREDUMP
 	---help---
 	  This adds support for wireless adapters based on Marvell
 	  8766/8897/8997 chipsets with PCIe interface.

@@ -29,6 +29,8 @@ config BACKPORT_ATH9K
 	select BACKPORT_MAC80211_LEDS
 	depends on LEDS_CLASS
 	depends on NEW_LEDS
+	depends on DEBUG_FS
+	depends on RELAY
 	select BACKPORT_ATH9K_COMMON
 	---help---
 	  This module adds support for wireless adapters based on
@@ -179,6 +181,8 @@ config BACKPORT_ATH9K_HTC
        select BACKPORT_MAC80211_LEDS
        depends on LEDS_CLASS
        depends on NEW_LEDS
+       depends on DEBUG_FS
+       depends on RELAY
        select BACKPORT_ATH9K_COMMON
        ---help---
 	 Support for Atheros HTC based cards.
