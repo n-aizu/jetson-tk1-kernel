@@ -43,7 +43,7 @@ config BACKPORT_DVB_M88DS3103
 	tristate "Montage Technology M88DS3103"
 	depends on !DVB_M88DS3103
 	depends on BACKPORT_DVB_CORE && I2C && I2C_MUX
-	select REGMAP_I2C
+	depends on REGMAP_I2C
 	default m if !MEDIA_SUBDRV_AUTOSELECT
 	help
 	  Say Y when you want to support this frontend.
@@ -273,7 +273,7 @@ config BACKPORT_DVB_TS2020
 	tristate "Montage Tehnology TS2020 based tuners"
 	depends on !DVB_TS2020
 	depends on BACKPORT_DVB_CORE && I2C
-	select REGMAP_I2C
+	depends on REGMAP_I2C
 	default m if !MEDIA_SUBDRV_AUTOSELECT
 	help
 	  A DVB-S/S2 silicon tuner. Say Y when you want to support this tuner.
@@ -299,7 +299,7 @@ config BACKPORT_DVB_TDA10071
 	tristate "NXP TDA10071"
 	depends on !DVB_TDA10071
 	depends on BACKPORT_DVB_CORE && I2C
-	select REGMAP
+	depends on REGMAP
 	default m if !MEDIA_SUBDRV_AUTOSELECT
 	help
 	  Say Y when you want to support this frontend.
@@ -520,7 +520,7 @@ config BACKPORT_DVB_RTL2830
 	tristate "Realtek RTL2830 DVB-T"
 	depends on !DVB_RTL2830
 	depends on BACKPORT_DVB_CORE && I2C && I2C_MUX
-	select REGMAP
+	depends on REGMAP
 	default m if !MEDIA_SUBDRV_AUTOSELECT
 	help
 	  Say Y when you want to support this frontend.
@@ -529,7 +529,7 @@ config BACKPORT_DVB_RTL2832
 	tristate "Realtek RTL2832 DVB-T"
 	depends on !DVB_RTL2832
 	depends on BACKPORT_DVB_CORE && I2C && I2C_MUX
-	select REGMAP
+	depends on REGMAP
 	default m if !MEDIA_SUBDRV_AUTOSELECT
 	help
 	  Say Y when you want to support this frontend.
@@ -885,7 +885,7 @@ config BACKPORT_DVB_LGS8GXX
 	tristate "Legend Silicon LGS8913/LGS8GL5/LGS8GXX DMB-TH demodulator"
 	depends on !DVB_LGS8GXX
 	depends on BACKPORT_DVB_CORE && I2C
-	select FW_LOADER
+	depends on FW_LOADER
 	default m if !MEDIA_SUBDRV_AUTOSELECT
 	help
 	  A DMB-TH tuner module. Say Y when you want to support this frontend.

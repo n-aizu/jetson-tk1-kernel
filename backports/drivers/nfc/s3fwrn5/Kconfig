@@ -1,7 +1,7 @@
 config BACKPORT_NFC_S3FWRN5
 	tristate
 	depends on !NFC_S3FWRN5
-	select CRYPTO
+	depends on CRYPTO
 	---help---
 	  Core driver for Samsung S3FWRN5 BACKPORT_NFC chip. Contains core utilities
 	  of chip. It's intended to be used by PHYs to avoid duplicating lots

@@ -1,7 +1,7 @@
 config BACKPORT_NFC_MICROREAD
 	tristate
 	depends on !NFC_MICROREAD
-	select CRC_CCITT
+	depends on CRC_CCITT
 	---help---
 	  This module contains the main code for Inside Secure microread
 	  BACKPORT_NFC chipsets. It implements the chipset HCI logic and hooks into
