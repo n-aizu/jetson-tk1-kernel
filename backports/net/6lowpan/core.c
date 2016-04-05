@@ -21,7 +21,11 @@ void lowpan_netdev_setup(struct net_device *dev, enum lowpan_lltypes lltype)
 	dev->addr_len = EUI64_ADDR_LEN;
 	dev->type = ARPHRD_6LOWPAN;
 	dev->mtu = IPV6_MIN_MTU;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,3,0)
 	dev->priv_flags |= IFF_NO_QUEUE;
+#else
+	dev->tx_queue_len = 0;
+#endif
 
 	lowpan_priv(dev)->lltype = lltype;
 }
