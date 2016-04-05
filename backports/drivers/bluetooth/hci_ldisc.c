@@ -24,6 +24,7 @@
  */
 
 #include <linux/module.h>
+#include <linux/version.h>
 
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -268,7 +269,11 @@ void hci_uart_set_flow_control(struct hci_uart *hu, bool enable)
 
 	if (enable) {
 		/* Disable hardware flow control */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0))
 		ktermios = tty->termios;
+#else
+		ktermios = *tty->termios;
+#endif
 		ktermios.c_cflag &= ~CRTSCTS;
 		status = tty_set_termios(tty, &ktermios);
 		BT_DBG("Disabling hardware flow control: %s",
@@ -302,7 +307,11 @@ void hci_uart_set_flow_control(struct hci_uart *hu, bool enable)
 		BT_DBG("Setting RTS: %s", status ? "failed" : "success");
 
 		/* Re-enable hardware flow control */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0))
 		ktermios = tty->termios;
+#else
+		ktermios = *tty->termios;
+#endif
 		ktermios.c_cflag |= CRTSCTS;
 		status = tty_set_termios(tty, &ktermios);
 		BT_DBG("Enabling hardware flow control: %s",
@@ -323,7 +332,11 @@ void hci_uart_init_tty(struct hci_uart *hu)
 	struct ktermios ktermios;
 
 	/* Bring the UART into a known 8 bits no parity hw fc state */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0))
 	ktermios = tty->termios;
+#else
+	ktermios = *tty->termios;
+#endif
 	ktermios.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP |
 			      INLCR | IGNCR | ICRNL | IXON);
 	ktermios.c_oflag &= ~OPOST;
@@ -341,7 +354,11 @@ void hci_uart_set_baudrate(struct hci_uart *hu, unsigned int speed)
 	struct tty_struct *tty = hu->tty;
 	struct ktermios ktermios;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0))
 	ktermios = tty->termios;
+#else
+	ktermios = *tty->termios;
+#endif
 	ktermios.c_cflag &= ~CBAUD;
 	tty_termios_encode_baud_rate(&ktermios, speed, speed);
 
@@ -349,7 +366,7 @@ void hci_uart_set_baudrate(struct hci_uart *hu, unsigned int speed)
 	tty_set_termios(tty, &ktermios);
 
 	BT_DBG("%s: New tty speeds: %d/%d", hu->hdev->name,
-	       tty->termios.c_ispeed, tty->termios.c_ospeed);
+	       ktermios.c_ispeed, ktermios.c_ospeed);
 }
 
 static int hci_uart_setup(struct hci_dev *hdev)
