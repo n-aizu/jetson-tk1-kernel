@@ -122,8 +122,9 @@ static u8 intel_convert_speed(unsigned int speed)
 static int intel_wait_booting(struct hci_uart *hu)
 {
 	struct intel_data *intel = hu->priv;
-	int err;
+	int err = 0;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 	err = wait_on_bit_timeout(&intel->flags, STATE_BOOTING,
 				  TASK_INTERRUPTIBLE,
 				  msecs_to_jiffies(1000));
@@ -137,6 +138,33 @@ static int intel_wait_booting(struct hci_uart *hu)
 		bt_dev_err(hu->hdev, "Device boot timeout");
 		return -ETIMEDOUT;
 	}
+#else
+	if (test_bit(STATE_BOOTING, &intel->flags)) {
+		DECLARE_WAITQUEUE(wait, current);
+		signed long timeout;
+
+		add_wait_queue(&hu->hdev->req_wait_q, &wait);
+		set_current_state(TASK_INTERRUPTIBLE);
+
+		/* Booting into operational firmware should not take
+		 * longer than 1 second. However if that happens, then
+		 * just fail the setup since something went wrong.
+		 */
+		timeout = schedule_timeout(msecs_to_jiffies(1000));
+
+		remove_wait_queue(&hu->hdev->req_wait_q, &wait);
+
+		if (signal_pending(current)) {
+			BT_ERR("%s: Device boot interrupted", hu->hdev->name);
+			return -EINTR;
+		}
+
+		if (!timeout) {
+			BT_ERR("%s: Device boot timeout", hu->hdev->name);
+			return -ETIMEDOUT;
+		}
+	}
+#endif
 
 	return err;
 }
@@ -145,8 +173,9 @@ static int intel_wait_booting(struct hci_uart *hu)
 static int intel_wait_lpm_transaction(struct hci_uart *hu)
 {
 	struct intel_data *intel = hu->priv;
-	int err;
+	int err = 0;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 	err = wait_on_bit_timeout(&intel->flags, STATE_LPM_TRANSACTION,
 				  TASK_INTERRUPTIBLE,
 				  msecs_to_jiffies(1000));
@@ -160,6 +189,29 @@ static int intel_wait_lpm_transaction(struct hci_uart *hu)
 		bt_dev_err(hu->hdev, "LPM transaction timeout");
 		return -ETIMEDOUT;
 	}
+#else
+	if (test_bit(STATE_LPM_TRANSACTION, &intel->flags)) {
+		DECLARE_WAITQUEUE(wait, current);
+		signed long timeout;
+
+		add_wait_queue(&hu->hdev->req_wait_q, &wait);
+		set_current_state(TASK_INTERRUPTIBLE);
+
+		timeout = schedule_timeout(msecs_to_jiffies(1000));
+
+		remove_wait_queue(&hu->hdev->req_wait_q, &wait);
+
+		if (signal_pending(current)) {
+			BT_ERR("%s: LPM transaction interrupted", hu->hdev->name);
+			return -EINTR;
+		}
+
+		if (!timeout) {
+			BT_ERR("%s: LPM transaction timeout", hu->hdev->name);
+			return -ETIMEDOUT;
+		}
+	}
+#endif
 
 	return err;
 }
@@ -836,6 +888,7 @@ static int intel_setup(struct hci_uart *hu)
 	 * and thus just timeout if that happens and fail the setup
 	 * of this device.
 	 */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 	err = wait_on_bit_timeout(&intel->flags, STATE_DOWNLOADING,
 				  TASK_INTERRUPTIBLE,
 				  msecs_to_jiffies(5000));
@@ -850,6 +903,33 @@ static int intel_setup(struct hci_uart *hu)
 		err = -ETIMEDOUT;
 		goto done;
 	}
+#else
+	if (test_bit(STATE_DOWNLOADING, &intel->flags)) {
+		DECLARE_WAITQUEUE(wait, current);
+		signed long timeout;
+
+		add_wait_queue(&hdev->req_wait_q, &wait);
+		set_current_state(TASK_INTERRUPTIBLE);
+
+		/* Booting into operational firmware should not take
+		 * longer than 1 second. However if that happens, then
+		 * just fail the setup since something went wrong.
+		 */
+		timeout = schedule_timeout(msecs_to_jiffies(5000));
+
+		remove_wait_queue(&hdev->req_wait_q, &wait);
+
+		if (signal_pending(current)) {
+			BT_ERR("%s: Firmware loading interrupted", hdev->name);
+			return -EINTR;
+		}
+
+		if (!timeout) {
+			BT_ERR("%s: Firmware loading timeout", hdev->name);
+			return -ETIMEDOUT;
+		}
+	}
+#endif
 
 	if (test_bit(STATE_FIRMWARE_FAILED, &intel->flags)) {
 		bt_dev_err(hdev, "Firmware loading failed");
@@ -981,8 +1061,12 @@ static int intel_recv_event(struct hci_dev *hdev, struct sk_buff *skb)
 
 		if (test_and_clear_bit(STATE_DOWNLOADING, &intel->flags) &&
 		    test_bit(STATE_FIRMWARE_LOADED, &intel->flags)) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 			smp_mb__after_atomic();
 			wake_up_bit(&intel->flags, STATE_DOWNLOADING);
+#else
+			wake_up_interruptible(&hu->hdev->req_wait_q);
+#endif
 		}
 
 	/* When switching to the operational firmware the device
@@ -992,8 +1076,12 @@ static int intel_recv_event(struct hci_dev *hdev, struct sk_buff *skb)
 	} else if (skb->len == 9 && hdr->evt == 0xff && hdr->plen == 0x07 &&
 		   skb->data[2] == 0x02) {
 		if (test_and_clear_bit(STATE_BOOTING, &intel->flags)) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 			smp_mb__after_atomic();
 			wake_up_bit(&intel->flags, STATE_BOOTING);
+#else
+			wake_up_interruptible(&hu->hdev->req_wait_q);
+#endif
 		}
 	}
 recv:
@@ -1032,15 +1120,23 @@ static int intel_recv_lpm(struct hci_dev *hdev, struct sk_buff *skb)
 	case LPM_OP_SUSPEND_ACK:
 		set_bit(STATE_SUSPENDED, &intel->flags);
 		if (test_and_clear_bit(STATE_LPM_TRANSACTION, &intel->flags)) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 			smp_mb__after_atomic();
 			wake_up_bit(&intel->flags, STATE_LPM_TRANSACTION);
+#else
+			wake_up_interruptible(&hu->hdev->req_wait_q);
+#endif
 		}
 		break;
 	case LPM_OP_RESUME_ACK:
 		clear_bit(STATE_SUSPENDED, &intel->flags);
 		if (test_and_clear_bit(STATE_LPM_TRANSACTION, &intel->flags)) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 			smp_mb__after_atomic();
 			wake_up_bit(&intel->flags, STATE_LPM_TRANSACTION);
+#else
+			wake_up_interruptible(&hu->hdev->req_wait_q);
+#endif
 		}
 		break;
 	default:
