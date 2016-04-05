@@ -1,14 +1,15 @@
-config VIDEO_COBALT
+config BACKPORT_VIDEO_COBALT
 	tristate "Cisco Cobalt support"
-	depends on VIDEO_V4L2 && I2C && VIDEO_V4L2_SUBDEV_API
+	depends on !VIDEO_COBALT
+	depends on VIDEO_V4L2 && I2C && BACKPORT_VIDEO_V4L2_SUBDEV_API
 	depends on PCI_MSI && MTD_COMPLEX_MAPPINGS
 	depends on GPIOLIB || COMPILE_TEST
 	depends on SND
 	select I2C_ALGOBIT
-	select VIDEO_ADV7604
-	select VIDEO_ADV7511
-	select VIDEO_ADV7842
-	select VIDEOBUF2_DMA_SG
+	select BACKPORT_VIDEO_ADV7604
+	select BACKPORT_VIDEO_ADV7511
+	select BACKPORT_VIDEO_ADV7842
+	select BACKPORT_VIDEOBUF2_DMA_SG
 	---help---
 	  This is a video4linux driver for the Cisco PCIe Cobalt card.
 

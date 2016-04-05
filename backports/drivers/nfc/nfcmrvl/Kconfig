@@ -1,54 +1,59 @@
-config NFC_MRVL
+config BACKPORT_NFC_MRVL
 	tristate
+	depends on !NFC_MRVL
 	help
-	  The core driver to support Marvell NFC devices.
+	  The core driver to support Marvell BACKPORT_NFC devices.
 
 	  This driver is required if you want to support
-	  Marvell NFC device 8897.
+	  Marvell BACKPORT_NFC device 8897.
 
-config NFC_MRVL_USB
+config BACKPORT_NFC_MRVL_USB
 	tristate "Marvell NFC-over-USB driver"
-	depends on NFC_NCI && USB
-	select NFC_MRVL
+	depends on !NFC_MRVL_USB
+	depends on BACKPORT_NFC_NCI && USB
+	select BACKPORT_NFC_MRVL
 	help
-	  Marvell NFC-over-USB driver.
+	  Marvell BACKPORT_NFC-over-USB driver.
 
-	  This driver provides support for Marvell NFC-over-USB devices:
+	  This driver provides support for Marvell BACKPORT_NFC-over-USB devices:
           8897.
 
-	  Say Y here to compile support for Marvell NFC-over-USB driver
+	  Say Y here to compile support for Marvell BACKPORT_NFC-over-USB driver
 	  into the kernel or say M to compile it as module.
 
-config NFC_MRVL_UART
+config BACKPORT_NFC_MRVL_UART
 	tristate "Marvell NFC-over-UART driver"
-	depends on NFC_NCI && NFC_NCI_UART
-	select NFC_MRVL
+	depends on !NFC_MRVL_UART
+	depends on BACKPORT_NFC_NCI && BACKPORT_NFC_NCI_UART
+	select BACKPORT_NFC_MRVL
 	help
-	  Marvell NFC-over-UART driver.
+	  Marvell BACKPORT_NFC-over-UART driver.
 
-	  This driver provides support for Marvell NFC-over-UART devices
+	  This driver provides support for Marvell BACKPORT_NFC-over-UART devices
 
-	  Say Y here to compile support for Marvell NFC-over-UART driver
+	  Say Y here to compile support for Marvell BACKPORT_NFC-over-UART driver
 	  into the kernel or say M to compile it as module.
 
-config NFC_MRVL_I2C
+config BACKPORT_NFC_MRVL_I2C
 	tristate "Marvell NFC-over-I2C driver"
-	depends on NFC_MRVL && I2C
+	depends on !NFC_MRVL_I2C
+	depends on BACKPORT_NFC_MRVL && I2C
 	help
-	  Marvell NFC-over-I2C driver.
+	  Marvell BACKPORT_NFC-over-I2C driver.
 
-	  This driver provides support for Marvell NFC-over-I2C devices.
+	  This driver provides support for Marvell BACKPORT_NFC-over-I2C devices.
 
-	  Say Y here to compile support for Marvell NFC-over-I2C driver
+	  Say Y here to compile support for Marvell BACKPORT_NFC-over-I2C driver
 	  into the kernel or say M to compile it as module.
 
-config NFC_MRVL_SPI
+config BACKPORT_NFC_MRVL_SPI
 	tristate "Marvell NFC-over-SPI driver"
-	depends on NFC_MRVL && NFC_NCI_SPI
+	depends on !NFC_MRVL_SPI
+	depends on BACKPORT_NFC_MRVL && BACKPORT_NFC_NCI_SPI
 	help
-	  Marvell NFC-over-SPI driver.
+	  Marvell BACKPORT_NFC-over-SPI driver.
 
-	  This driver provides support for Marvell NFC-over-SPI devices.
+	  This driver provides support for Marvell BACKPORT_NFC-over-SPI devices.
 
-	  Say Y here to compile support for Marvell NFC-over-SPI driver
+	  Say Y here to compile support for Marvell BACKPORT_NFC-over-SPI driver
 	  into the kernel or say M to compile it as module.
