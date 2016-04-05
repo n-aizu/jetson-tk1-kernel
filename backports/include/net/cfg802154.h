@@ -28,7 +28,7 @@ struct wpan_phy;
 struct wpan_phy_cca;
 struct wpan_dev;
 
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 struct ieee802154_llsec_device_key;
 struct ieee802154_llsec_seclevel;
 struct ieee802154_llsec_params;
@@ -36,7 +36,7 @@ struct ieee802154_llsec_device;
 struct ieee802154_llsec_table;
 struct ieee802154_llsec_key_id;
 struct ieee802154_llsec_key;
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 
 struct cfg802154_ops {
 	struct net_device * (*add_virtual_intf_deprecated)(struct wpan_phy *wpan_phy,
@@ -76,7 +76,7 @@ struct cfg802154_ops {
 				struct wpan_dev *wpan_dev, bool mode);
 	int	(*set_ackreq_default)(struct wpan_phy *wpan_phy,
 				      struct wpan_dev *wpan_dev, bool ackreq);
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 	void	(*get_llsec_table)(struct wpan_phy *wpan_phy,
 				   struct wpan_dev *wpan_dev,
 				   struct ieee802154_llsec_table **table);
@@ -120,7 +120,7 @@ struct cfg802154_ops {
 			      struct wpan_dev *wpan_dev,
 			      __le64 extended_addr,
 			      const struct ieee802154_llsec_device_key *key);
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 };
 
 static inline bool

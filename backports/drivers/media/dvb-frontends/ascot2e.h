@@ -41,7 +41,7 @@ struct ascot2e_config {
 	int	(*set_tuner_callback)(void *, int);
 };
 
-#if IS_REACHABLE(CONFIG_DVB_ASCOT2E)
+#if IS_REACHABLE(CONFIG_BACKPORT_DVB_ASCOT2E)
 extern struct dvb_frontend *ascot2e_attach(struct dvb_frontend *fe,
 					const struct ascot2e_config *config,
 					struct i2c_adapter *i2c);

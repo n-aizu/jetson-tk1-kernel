@@ -4302,7 +4302,7 @@ unlock:
 	hci_dev_unlock(hdev);
 }
 
-#if IS_ENABLED(CONFIG_BT_HS)
+#if IS_ENABLED(CONFIG_BACKPORT_BT_HS)
 static void hci_chan_selected_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_ev_channel_selected *ev = (void *)skb->data;
@@ -5379,7 +5379,7 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_remote_oob_data_request_evt(hdev, skb);
 		break;
 
-#if IS_ENABLED(CONFIG_BT_HS)
+#if IS_ENABLED(CONFIG_BACKPORT_BT_HS)
 	case HCI_EV_CHANNEL_SELECTED:
 		hci_chan_selected_evt(hdev, skb);
 		break;

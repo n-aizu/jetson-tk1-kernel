@@ -261,7 +261,7 @@ void debugfs_hw_add(struct ieee80211_local *local)
 	if (!statsd)
 		return;
 
-#ifdef CONFIG_MAC80211_DEBUG_COUNTERS
+#ifdef CONFIG_BACKPORT_MAC80211_DEBUG_COUNTERS
 	DEBUGFS_STATS_ADD(dot11TransmittedFragmentCount);
 	DEBUGFS_STATS_ADD(dot11MulticastTransmittedFrameCount);
 	DEBUGFS_STATS_ADD(dot11FailedCount);

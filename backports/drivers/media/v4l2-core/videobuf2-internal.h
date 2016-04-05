@@ -14,7 +14,7 @@ extern int vb2_debug;
 			pr_info("vb2: %s: " fmt, __func__, ## arg); \
 	} while (0)
 
-#ifdef CONFIG_VIDEO_ADV_DEBUG
+#ifdef CONFIG_BACKPORT_VIDEO_ADV_DEBUG
 
 /*
  * If advanced debugging is on, then count how often each op is called

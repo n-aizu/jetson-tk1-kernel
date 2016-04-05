@@ -271,7 +271,7 @@ static u32 ssb_pcmcia_read32(struct ssb_device *dev, u16 offset)
 	return (lo | (hi << 16));
 }
 
-#ifdef CONFIG_SSB_BLOCKIO
+#ifdef CONFIG_BACKPORT_SSB_BLOCKIO
 static void ssb_pcmcia_block_read(struct ssb_device *dev, void *buffer,
 				  size_t count, u16 offset, u8 reg_width)
 {
@@ -327,7 +327,7 @@ static void ssb_pcmcia_block_read(struct ssb_device *dev, void *buffer,
 unlock:
 	spin_unlock_irqrestore(&bus->bar_lock, flags);
 }
-#endif /* CONFIG_SSB_BLOCKIO */
+#endif /* CONFIG_BACKPORT_SSB_BLOCKIO */
 
 static void ssb_pcmcia_write8(struct ssb_device *dev, u16 offset, u8 value)
 {
@@ -373,7 +373,7 @@ static void ssb_pcmcia_write32(struct ssb_device *dev, u16 offset, u32 value)
 	spin_unlock_irqrestore(&bus->bar_lock, flags);
 }
 
-#ifdef CONFIG_SSB_BLOCKIO
+#ifdef CONFIG_BACKPORT_SSB_BLOCKIO
 static void ssb_pcmcia_block_write(struct ssb_device *dev, const void *buffer,
 				   size_t count, u16 offset, u8 reg_width)
 {
@@ -428,7 +428,7 @@ unlock:
 	mmiowb();
 	spin_unlock_irqrestore(&bus->bar_lock, flags);
 }
-#endif /* CONFIG_SSB_BLOCKIO */
+#endif /* CONFIG_BACKPORT_SSB_BLOCKIO */
 
 /* Not "static", as it's used in main.c */
 const struct ssb_bus_ops ssb_pcmcia_ops = {
@@ -438,7 +438,7 @@ const struct ssb_bus_ops ssb_pcmcia_ops = {
 	.write8		= ssb_pcmcia_write8,
 	.write16	= ssb_pcmcia_write16,
 	.write32	= ssb_pcmcia_write32,
-#ifdef CONFIG_SSB_BLOCKIO
+#ifdef CONFIG_BACKPORT_SSB_BLOCKIO
 	.block_read	= ssb_pcmcia_block_read,
 	.block_write	= ssb_pcmcia_block_write,
 #endif

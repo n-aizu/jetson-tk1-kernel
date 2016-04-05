@@ -1142,7 +1142,7 @@ static const struct dvb_device dvbdev_demux = {
 	.priv = NULL,
 	.users = 1,
 	.writers = 1,
-#if defined(CONFIG_MEDIA_CONTROLLER_DVB)
+#if defined(CONFIG_BACKPORT_MEDIA_CONTROLLER_DVB)
 	.name = "dvb-demux",
 #endif
 	.fops = &dvb_demux_fops
@@ -1218,7 +1218,7 @@ static const struct dvb_device dvbdev_dvr = {
 	.priv = NULL,
 	.readers = 1,
 	.users = 1,
-#if defined(CONFIG_MEDIA_CONTROLLER_DVB)
+#if defined(CONFIG_BACKPORT_MEDIA_CONTROLLER_DVB)
 	.name = "dvb-dvr",
 #endif
 	.fops = &dvb_dvr_fops

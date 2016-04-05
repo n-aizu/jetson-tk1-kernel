@@ -399,7 +399,7 @@ static int mt9t031_set_fmt(struct v4l2_subdev *sd,
 	return mt9t031_set_params(client, &rect, xskip, yskip);
 }
 
-#ifdef CONFIG_VIDEO_ADV_DEBUG
+#ifdef CONFIG_BACKPORT_VIDEO_ADV_DEBUG
 static int mt9t031_g_register(struct v4l2_subdev *sd,
 			      struct v4l2_dbg_register *reg)
 {
@@ -674,7 +674,7 @@ static const struct v4l2_ctrl_ops mt9t031_ctrl_ops = {
 
 static struct v4l2_subdev_core_ops mt9t031_subdev_core_ops = {
 	.s_power	= mt9t031_s_power,
-#ifdef CONFIG_VIDEO_ADV_DEBUG
+#ifdef CONFIG_BACKPORT_VIDEO_ADV_DEBUG
 	.g_register	= mt9t031_g_register,
 	.s_register	= mt9t031_s_register,
 #endif

@@ -60,7 +60,7 @@
 #include "regdb.h"
 #include "nl80211.h"
 
-#ifdef CONFIG_CFG80211_REG_DEBUG
+#ifdef CONFIG_BACKPORT_CFG80211_REG_DEBUG
 #define REG_DBG_PRINT(format, args...)			\
 	printk(KERN_DEBUG pr_fmt(format), ##args)
 #else
@@ -449,7 +449,7 @@ reg_copy_regd(const struct ieee80211_regdomain *src_regd)
 	return regd;
 }
 
-#ifdef CONFIG_CFG80211_INTERNAL_REGDB
+#ifdef CONFIG_BACKPORT_CFG80211_INTERNAL_REGDB
 struct reg_regdb_apply_request {
 	struct list_head list;
 	const struct ieee80211_regdomain *regdom;
@@ -528,9 +528,9 @@ static inline int reg_query_builtin(const char *alpha2)
 {
 	return -ENODATA;
 }
-#endif /* CONFIG_CFG80211_INTERNAL_REGDB */
+#endif /* CONFIG_BACKPORT_CFG80211_INTERNAL_REGDB */
 
-#ifdef CONFIG_CFG80211_CRDA_SUPPORT
+#ifdef CONFIG_BACKPORT_CFG80211_CRDA_SUPPORT
 /* Max number of consecutive attempts to communicate with CRDA  */
 #define REG_MAX_CRDA_TIMEOUTS 10
 
@@ -603,7 +603,7 @@ static inline int call_crda(const char *alpha2)
 {
 	return -ENODATA;
 }
-#endif /* CONFIG_CFG80211_CRDA_SUPPORT */
+#endif /* CONFIG_BACKPORT_CFG80211_CRDA_SUPPORT */
 
 static bool reg_query_database(struct regulatory_request *request)
 {
@@ -1134,7 +1134,7 @@ static void chan_reg_rule_print_dbg(const struct ieee80211_regdomain *regd,
 				    struct ieee80211_channel *chan,
 				    const struct ieee80211_reg_rule *reg_rule)
 {
-#ifdef CONFIG_CFG80211_REG_DEBUG
+#ifdef CONFIG_BACKPORT_CFG80211_REG_DEBUG
 	const struct ieee80211_power_rule *power_rule;
 	const struct ieee80211_freq_range *freq_range;
 	char max_antenna_gain[32], bw[32];
@@ -1330,7 +1330,7 @@ bool reg_last_request_cell_base(void)
 	return reg_request_cell_base(get_last_request());
 }
 
-#ifdef CONFIG_CFG80211_REG_CELLULAR_HINTS
+#ifdef CONFIG_BACKPORT_CFG80211_REG_CELLULAR_HINTS
 /* Core specific check */
 static enum reg_request_treatment
 reg_ignore_cell_hint(struct regulatory_request *pending_request)

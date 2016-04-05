@@ -374,7 +374,7 @@ struct cx88_core {
 	unsigned int               tuner_formats;
 
 	/* config info -- dvb */
-#if IS_ENABLED(CONFIG_VIDEO_CX88_DVB)
+#if IS_ENABLED(CONFIG_BACKPORT_VIDEO_CX88_DVB)
 	int	(*prev_set_voltage)(struct dvb_frontend *fe,
 				    enum fe_sec_voltage voltage);
 #endif
@@ -562,7 +562,7 @@ struct cx8802_dev {
 
 	/* for blackbird only */
 	struct list_head           devlist;
-#if IS_ENABLED(CONFIG_VIDEO_CX88_BLACKBIRD)
+#if IS_ENABLED(CONFIG_BACKPORT_VIDEO_CX88_BLACKBIRD)
 	struct video_device        mpeg_dev;
 	u32                        mailbox;
 
@@ -570,12 +570,12 @@ struct cx8802_dev {
 	struct cx2341x_handler     cxhdl;
 #endif
 
-#if IS_ENABLED(CONFIG_VIDEO_CX88_DVB)
+#if IS_ENABLED(CONFIG_BACKPORT_VIDEO_CX88_DVB)
 	/* for dvb only */
 	struct vb2_dvb_frontends frontends;
 #endif
 
-#if IS_ENABLED(CONFIG_VIDEO_CX88_VP3054)
+#if IS_ENABLED(CONFIG_BACKPORT_VIDEO_CX88_VP3054)
 	/* For VP3045 secondary I2C bus support */
 	struct vp3054_i2c_state	   *vp3054;
 #endif

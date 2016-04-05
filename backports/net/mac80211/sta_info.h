@@ -403,7 +403,7 @@ struct sta_info {
 
 	struct ieee80211_fast_tx __rcu *fast_tx;
 
-#ifdef CONFIG_MAC80211_MESH
+#ifdef CONFIG_BACKPORT_MAC80211_MESH
 	struct mesh_sta *mesh;
 #endif
 
@@ -477,7 +477,7 @@ struct sta_info {
 	struct sta_ampdu_mlme ampdu_mlme;
 	u8 timer_to_tid[IEEE80211_NUM_TIDS];
 
-#ifdef CONFIG_MAC80211_DEBUGFS
+#ifdef CONFIG_BACKPORT_MAC80211_DEBUGFS
 	struct sta_info_debugfsdentries {
 		struct dentry *dir;
 		bool add_has_run;
@@ -499,7 +499,7 @@ struct sta_info {
 
 static inline enum nl80211_plink_state sta_plink_state(struct sta_info *sta)
 {
-#ifdef CONFIG_MAC80211_MESH
+#ifdef CONFIG_BACKPORT_MAC80211_MESH
 	return sta->mesh->plink_state;
 #endif
 	return NL80211_PLINK_LISTEN;

@@ -1169,7 +1169,7 @@ void cx231xx_config_i2c(struct cx231xx *dev)
 
 static void cx231xx_unregister_media_device(struct cx231xx *dev)
 {
-#ifdef CONFIG_MEDIA_CONTROLLER
+#ifdef CONFIG_BACKPORT_MEDIA_CONTROLLER
 	if (dev->media_dev) {
 		media_device_unregister(dev->media_dev);
 		kfree(dev->media_dev);
@@ -1208,7 +1208,7 @@ void cx231xx_release_resources(struct cx231xx *dev)
 static void cx231xx_media_device_register(struct cx231xx *dev,
 					  struct usb_device *udev)
 {
-#ifdef CONFIG_MEDIA_CONTROLLER
+#ifdef CONFIG_BACKPORT_MEDIA_CONTROLLER
 	struct media_device *mdev;
 	int ret;
 
@@ -1239,7 +1239,7 @@ static void cx231xx_media_device_register(struct cx231xx *dev,
 
 static void cx231xx_create_media_graph(struct cx231xx *dev)
 {
-#ifdef CONFIG_MEDIA_CONTROLLER
+#ifdef CONFIG_BACKPORT_MEDIA_CONTROLLER
 	struct media_device *mdev = dev->media_dev;
 	struct media_entity *entity;
 	struct media_entity *tuner = NULL, *decoder = NULL;
@@ -1664,7 +1664,7 @@ static int cx231xx_usb_probe(struct usb_interface *interface,
 	cx231xx_media_device_register(dev, udev);
 
 	/* Create v4l2 device */
-#ifdef CONFIG_MEDIA_CONTROLLER
+#ifdef CONFIG_BACKPORT_MEDIA_CONTROLLER
 	dev->v4l2_dev.mdev = dev->media_dev;
 #endif
 	retval = v4l2_device_register(&interface->dev, &dev->v4l2_dev);

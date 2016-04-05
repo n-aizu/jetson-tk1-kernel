@@ -1,4 +1,4 @@
-obj-$(CONFIG_WIL6210) += wil6210.o
+obj-$(CONFIG_BACKPORT_WIL6210) += wil6210.o
 
 wil6210-y := main.o
 wil6210-y += netdev.o
@@ -14,7 +14,7 @@ wil6210-y += ioctl.o
 wil6210-y += fw.o
 wil6210-y += pm.o
 wil6210-y += pmc.o
-wil6210-$(CONFIG_WIL6210_TRACING) += trace.o
+wil6210-$(CONFIG_BACKPORT_WIL6210_TRACING) += trace.o
 wil6210-y += wil_platform.o
 wil6210-y += ethtool.o
 wil6210-y += wil_crash_dump.o

@@ -97,7 +97,7 @@ static inline struct v4l2_flash *v4l2_ctrl_to_v4l2_flash(struct v4l2_ctrl *c)
 	return container_of(c->handler, struct v4l2_flash, hdl);
 }
 
-#if IS_ENABLED(CONFIG_V4L2_FLASH_LED_CLASS)
+#if IS_ENABLED(CONFIG_BACKPORT_V4L2_FLASH_LED_CLASS)
 /**
  * v4l2_flash_init - initialize V4L2 flash led sub-device
  * @dev:	flash device, e.g. an I2C device
@@ -143,6 +143,6 @@ static inline struct v4l2_flash *v4l2_flash_init(
 static inline void v4l2_flash_release(struct v4l2_flash *v4l2_flash)
 {
 }
-#endif /* CONFIG_V4L2_FLASH_LED_CLASS */
+#endif /* CONFIG_BACKPORT_V4L2_FLASH_LED_CLASS */
 
 #endif /* _V4L2_FLASH_H */

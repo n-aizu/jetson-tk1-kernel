@@ -1216,13 +1216,13 @@ void brcmf_bus_change_state(struct brcmf_bus *bus, enum brcmf_bus_state state)
 
 static void brcmf_driver_register(struct work_struct *work)
 {
-#ifdef CONFIG_BRCMFMAC_SDIO
+#ifdef CONFIG_BACKPORT_BRCMFMAC_SDIO
 	brcmf_sdio_register();
 #endif
-#ifdef CONFIG_BRCMFMAC_USB
+#ifdef CONFIG_BACKPORT_BRCMFMAC_USB
 	brcmf_usb_register();
 #endif
-#ifdef CONFIG_BRCMFMAC_PCIE
+#ifdef CONFIG_BACKPORT_BRCMFMAC_PCIE
 	brcmf_pcie_register();
 #endif
 }
@@ -1231,7 +1231,7 @@ static DECLARE_WORK(brcmf_driver_work, brcmf_driver_register);
 static int __init brcmfmac_module_init(void)
 {
 	brcmf_debugfs_init();
-#ifdef CONFIG_BRCMFMAC_SDIO
+#ifdef CONFIG_BACKPORT_BRCMFMAC_SDIO
 	brcmf_sdio_init();
 #endif
 	if (!schedule_work(&brcmf_driver_work))
@@ -1244,13 +1244,13 @@ static void __exit brcmfmac_module_exit(void)
 {
 	cancel_work_sync(&brcmf_driver_work);
 
-#ifdef CONFIG_BRCMFMAC_SDIO
+#ifdef CONFIG_BACKPORT_BRCMFMAC_SDIO
 	brcmf_sdio_exit();
 #endif
-#ifdef CONFIG_BRCMFMAC_USB
+#ifdef CONFIG_BACKPORT_BRCMFMAC_USB
 	brcmf_usb_exit();
 #endif
-#ifdef CONFIG_BRCMFMAC_PCIE
+#ifdef CONFIG_BACKPORT_BRCMFMAC_PCIE
 	brcmf_pcie_exit();
 #endif
 	brcmf_debugfs_exit();

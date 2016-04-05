@@ -1818,7 +1818,7 @@ static int rtl8723au_parse_efuse(struct rtl8xxxu_priv *priv)
 	return 0;
 }
 
-#ifdef CONFIG_RTL8XXXU_UNTESTED
+#ifdef CONFIG_BACKPORT_RTL8XXXU_UNTESTED
 
 static int rtl8192cu_parse_efuse(struct rtl8xxxu_priv *priv)
 {
@@ -2221,7 +2221,7 @@ static int rtl8723au_load_firmware(struct rtl8xxxu_priv *priv)
 	return ret;
 }
 
-#ifdef CONFIG_RTL8XXXU_UNTESTED
+#ifdef CONFIG_BACKPORT_RTL8XXXU_UNTESTED
 
 static int rtl8192cu_load_firmware(struct rtl8xxxu_priv *priv)
 {
@@ -3823,7 +3823,7 @@ exit:
 	return ret;
 }
 
-#ifdef CONFIG_RTL8XXXU_UNTESTED
+#ifdef CONFIG_BACKPORT_RTL8XXXU_UNTESTED
 
 static int rtl8192cu_power_on(struct rtl8xxxu_priv *priv)
 {
@@ -5795,7 +5795,7 @@ static struct rtl8xxxu_fileops rtl8723au_fops = {
 	.writeN_block_size = 1024,
 };
 
-#ifdef CONFIG_RTL8XXXU_UNTESTED
+#ifdef CONFIG_BACKPORT_RTL8XXXU_UNTESTED
 
 static struct rtl8xxxu_fileops rtl8192cu_fops = {
 	.parse_efuse = rtl8192cu_parse_efuse,
@@ -5813,7 +5813,7 @@ static struct usb_device_id dev_table[] = {
 	.driver_info = (unsigned long)&rtl8723au_fops},
 {USB_DEVICE_AND_INTERFACE_INFO(USB_VENDOR_ID_REALTEK, 0x0724, 0xff, 0xff, 0xff),
 	.driver_info = (unsigned long)&rtl8723au_fops},
-#ifdef CONFIG_RTL8XXXU_UNTESTED
+#ifdef CONFIG_BACKPORT_RTL8XXXU_UNTESTED
 /* Still supported by rtlwifi */
 {USB_DEVICE_AND_INTERFACE_INFO(USB_VENDOR_ID_REALTEK, 0x8176, 0xff, 0xff, 0xff),
 	.driver_info = (unsigned long)&rtl8192cu_fops},

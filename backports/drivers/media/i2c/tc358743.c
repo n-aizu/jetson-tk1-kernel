@@ -1196,7 +1196,7 @@ static int tc358743_log_status(struct v4l2_subdev *sd)
 	return 0;
 }
 
-#ifdef CONFIG_VIDEO_ADV_DEBUG
+#ifdef CONFIG_BACKPORT_VIDEO_ADV_DEBUG
 static void tc358743_print_register_map(struct v4l2_subdev *sd)
 {
 	v4l2_info(sd, "0x0000–0x00FF: Global Control Register\n");
@@ -1620,7 +1620,7 @@ static int tc358743_s_edid(struct v4l2_subdev *sd,
 
 static const struct v4l2_subdev_core_ops tc358743_core_ops = {
 	.log_status = tc358743_log_status,
-#ifdef CONFIG_VIDEO_ADV_DEBUG
+#ifdef CONFIG_BACKPORT_VIDEO_ADV_DEBUG
 	.g_register = tc358743_g_register,
 	.s_register = tc358743_s_register,
 #endif

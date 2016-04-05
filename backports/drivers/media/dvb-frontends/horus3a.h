@@ -41,7 +41,7 @@ struct horus3a_config {
 	int	(*set_tuner_callback)(void *, int);
 };
 
-#if IS_REACHABLE(CONFIG_DVB_HORUS3A)
+#if IS_REACHABLE(CONFIG_BACKPORT_DVB_HORUS3A)
 extern struct dvb_frontend *horus3a_attach(struct dvb_frontend *fe,
 					const struct horus3a_config *config,
 					struct i2c_adapter *i2c);

@@ -2743,7 +2743,7 @@ static int btusb_setup_qca(struct hci_dev *hdev)
 	return 0;
 }
 
-#ifdef CONFIG_BT_HCIBTUSB_BCM
+#ifdef CONFIG_BACKPORT_BT_HCIBTUSB_BCM
 static inline int __set_diag_interface(struct hci_dev *hdev)
 {
 	struct btusb_data *data = hci_get_drvdata(hdev);
@@ -2959,7 +2959,7 @@ static int btusb_probe(struct usb_interface *intf,
 	if (id->driver_info & BTUSB_BCM92035)
 		hdev->setup = btusb_setup_bcm92035;
 
-#ifdef CONFIG_BT_HCIBTUSB_BCM
+#ifdef CONFIG_BACKPORT_BT_HCIBTUSB_BCM
 	if (id->driver_info & BTUSB_BCM_PATCHRAM) {
 		hdev->manufacturer = 15;
 		hdev->setup = btbcm_setup_patchram;
@@ -3026,7 +3026,7 @@ static int btusb_probe(struct usb_interface *intf,
 		hdev->set_bdaddr = btusb_set_bdaddr_ath3012;
 	}
 
-#ifdef CONFIG_BT_HCIBTUSB_RTL
+#ifdef CONFIG_BACKPORT_BT_HCIBTUSB_RTL
 	if (id->driver_info & BTUSB_REALTEK) {
 		hdev->setup = btrtl_setup_realtek;
 
@@ -3106,7 +3106,7 @@ static int btusb_probe(struct usb_interface *intf,
 		}
 	}
 
-#ifdef CONFIG_BT_HCIBTUSB_BCM
+#ifdef CONFIG_BACKPORT_BT_HCIBTUSB_BCM
 	if (data->diag) {
 		if (!usb_driver_claim_interface(&btusb_driver,
 						data->diag, data))

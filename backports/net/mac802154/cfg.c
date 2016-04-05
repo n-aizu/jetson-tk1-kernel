@@ -266,7 +266,7 @@ ieee802154_set_ackreq_default(struct wpan_phy *wpan_phy,
 	return 0;
 }
 
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 static void
 ieee802154_get_llsec_table(struct wpan_phy *wpan_phy,
 			   struct wpan_dev *wpan_dev,
@@ -453,7 +453,7 @@ ieee802154_del_devkey(struct wpan_phy *wpan_phy, struct wpan_dev *wpan_dev,
 
 	return res;
 }
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 
 const struct cfg802154_ops mac802154_config_ops = {
 	.add_virtual_intf_deprecated = ieee802154_add_iface_deprecated,
@@ -473,7 +473,7 @@ const struct cfg802154_ops mac802154_config_ops = {
 	.set_max_frame_retries = ieee802154_set_max_frame_retries,
 	.set_lbt_mode = ieee802154_set_lbt_mode,
 	.set_ackreq_default = ieee802154_set_ackreq_default,
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 	.get_llsec_table = ieee802154_get_llsec_table,
 	.lock_llsec_table = ieee802154_lock_llsec_table,
 	.unlock_llsec_table = ieee802154_unlock_llsec_table,
@@ -488,5 +488,5 @@ const struct cfg802154_ops mac802154_config_ops = {
 	.del_device = ieee802154_del_device,
 	.add_devkey = ieee802154_add_devkey,
 	.del_devkey = ieee802154_del_devkey,
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 };

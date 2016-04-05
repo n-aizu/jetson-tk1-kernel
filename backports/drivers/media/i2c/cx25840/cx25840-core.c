@@ -1661,7 +1661,7 @@ static int cx25840_load_fw(struct v4l2_subdev *sd)
 	return 0;
 }
 
-#ifdef CONFIG_VIDEO_ADV_DEBUG
+#ifdef CONFIG_BACKPORT_VIDEO_ADV_DEBUG
 static int cx25840_g_register(struct v4l2_subdev *sd, struct v4l2_dbg_register *reg)
 {
 	struct i2c_client *client = v4l2_get_subdevdata(sd);
@@ -5049,7 +5049,7 @@ static const struct v4l2_subdev_core_ops cx25840_core_ops = {
 	.reset = cx25840_reset,
 	.load_fw = cx25840_load_fw,
 	.s_io_pin_config = common_s_io_pin_config,
-#ifdef CONFIG_VIDEO_ADV_DEBUG
+#ifdef CONFIG_BACKPORT_VIDEO_ADV_DEBUG
 	.g_register = cx25840_g_register,
 	.s_register = cx25840_s_register,
 #endif
@@ -5146,7 +5146,7 @@ static int cx25840_probe(struct i2c_client *client,
 	int default_volume;
 	u32 id;
 	u16 device_id;
-#if defined(CONFIG_MEDIA_CONTROLLER)
+#if defined(CONFIG_BACKPORT_MEDIA_CONTROLLER)
 	int ret;
 #endif
 
@@ -5190,7 +5190,7 @@ static int cx25840_probe(struct i2c_client *client,
 
 	sd = &state->sd;
 	v4l2_i2c_subdev_init(sd, client, &cx25840_ops);
-#if defined(CONFIG_MEDIA_CONTROLLER)
+#if defined(CONFIG_BACKPORT_MEDIA_CONTROLLER)
 	/*
 	 * TODO: add media controller support for analog video inputs like
 	 * composite, svideo, etc.

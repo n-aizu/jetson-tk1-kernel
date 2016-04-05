@@ -36,7 +36,7 @@ static u32 ssb_host_soc_read32(struct ssb_device *dev, u16 offset)
 	return readl(bus->mmio + offset);
 }
 
-#ifdef CONFIG_SSB_BLOCKIO
+#ifdef CONFIG_BACKPORT_SSB_BLOCKIO
 static void ssb_host_soc_block_read(struct ssb_device *dev, void *buffer,
 				    size_t count, u16 offset, u8 reg_width)
 {
@@ -83,7 +83,7 @@ static void ssb_host_soc_block_read(struct ssb_device *dev, void *buffer,
 		SSB_WARN_ON(1);
 	}
 }
-#endif /* CONFIG_SSB_BLOCKIO */
+#endif /* CONFIG_BACKPORT_SSB_BLOCKIO */
 
 static void ssb_host_soc_write8(struct ssb_device *dev, u16 offset, u8 value)
 {
@@ -109,7 +109,7 @@ static void ssb_host_soc_write32(struct ssb_device *dev, u16 offset, u32 value)
 	writel(value, bus->mmio + offset);
 }
 
-#ifdef CONFIG_SSB_BLOCKIO
+#ifdef CONFIG_BACKPORT_SSB_BLOCKIO
 static void ssb_host_soc_block_write(struct ssb_device *dev, const void *buffer,
 				     size_t count, u16 offset, u8 reg_width)
 {
@@ -156,7 +156,7 @@ static void ssb_host_soc_block_write(struct ssb_device *dev, const void *buffer,
 		SSB_WARN_ON(1);
 	}
 }
-#endif /* CONFIG_SSB_BLOCKIO */
+#endif /* CONFIG_BACKPORT_SSB_BLOCKIO */
 
 /* Ops for the plain SSB bus without a host-device (no PCI or PCMCIA). */
 const struct ssb_bus_ops ssb_host_soc_ops = {
@@ -166,7 +166,7 @@ const struct ssb_bus_ops ssb_host_soc_ops = {
 	.write8		= ssb_host_soc_write8,
 	.write16	= ssb_host_soc_write16,
 	.write32	= ssb_host_soc_write32,
-#ifdef CONFIG_SSB_BLOCKIO
+#ifdef CONFIG_BACKPORT_SSB_BLOCKIO
 	.block_read	= ssb_host_soc_block_read,
 	.block_write	= ssb_host_soc_block_write,
 #endif

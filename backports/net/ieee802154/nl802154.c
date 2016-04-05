@@ -235,7 +235,7 @@ static const struct nla_policy nl802154_policy[NL802154_ATTR_MAX+1] = {
 
 	[NL802154_ATTR_ACKREQ_DEFAULT] = { .type = NLA_U8 },
 
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 	[NL802154_ATTR_SEC_ENABLED] = { .type = NLA_U8, },
 	[NL802154_ATTR_SEC_OUT_LEVEL] = { .type = NLA_U32, },
 	[NL802154_ATTR_SEC_OUT_KEY_ID] = { .type = NLA_NESTED, },
@@ -245,10 +245,10 @@ static const struct nla_policy nl802154_policy[NL802154_ATTR_MAX+1] = {
 	[NL802154_ATTR_SEC_DEVICE] = { .type = NLA_NESTED },
 	[NL802154_ATTR_SEC_DEVKEY] = { .type = NLA_NESTED },
 	[NL802154_ATTR_SEC_KEY] = { .type = NLA_NESTED },
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 };
 
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 static int
 nl802154_prepare_wpan_dev_dump(struct sk_buff *skb,
 			       struct netlink_callback *cb,
@@ -312,7 +312,7 @@ nl802154_finish_wpan_dev_dump(struct cfg802154_registered_device *rdev)
 {
 	rtnl_unlock();
 }
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 
 /* message building helper */
 static inline void *nl802154hdr_put(struct sk_buff *skb, u32 portid, u32 seq,
@@ -692,7 +692,7 @@ static inline u64 wpan_dev_id(struct wpan_dev *wpan_dev)
 	       ((u64)wpan_phy_to_rdev(wpan_dev->wpan_phy)->wpan_phy_idx << 32);
 }
 
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 #include <net/ieee802154_netdev.h>
 
 static int
@@ -791,7 +791,7 @@ static int nl802154_get_llsec_params(struct sk_buff *msg,
 
 	return 0;
 }
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 
 static int
 nl802154_send_iface(struct sk_buff *msg, u32 portid, u32 seq, int flags,
@@ -844,10 +844,10 @@ nl802154_send_iface(struct sk_buff *msg, u32 portid, u32 seq, int flags,
 	if (nla_put_u8(msg, NL802154_ATTR_ACKREQ_DEFAULT, wpan_dev->ackreq))
 		goto nla_put_failure;
 
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 	if (nl802154_get_llsec_params(msg, rdev, wpan_dev) < 0)
 		goto nla_put_failure;
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 
 	genlmsg_end(msg, hdr);
 	return 0;
@@ -1259,7 +1259,7 @@ nl802154_set_ackreq_default(struct sk_buff *skb, struct genl_info *info)
 	return rdev_set_ackreq_default(rdev, wpan_dev, ackreq);
 }
 
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 static const struct nla_policy nl802154_dev_addr_policy[NL802154_DEV_ADDR_ATTR_MAX + 1] = {
 	[NL802154_DEV_ADDR_ATTR_PAN_ID] = { .type = NLA_U16 },
 	[NL802154_DEV_ADDR_ATTR_MODE] = { .type = NLA_U32 },
@@ -2089,7 +2089,7 @@ static int nl802154_del_llsec_seclevel(struct sk_buff *skb,
 
 	return rdev_del_seclevel(rdev, wpan_dev, &sl);
 }
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 
 #define NL802154_FLAG_NEED_WPAN_PHY	0x01
 #define NL802154_FLAG_NEED_NETDEV	0x02
@@ -2307,7 +2307,7 @@ static __genl_const struct genl_ops nl802154_ops[] = {
 		.internal_flags = NL802154_FLAG_NEED_NETDEV |
 				  NL802154_FLAG_NEED_RTNL,
 	},
-#ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
+#ifdef CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL
 	{
 		.cmd = NL802154_CMD_SET_SEC_PARAMS,
 		.doit = nl802154_set_llsec_params,
@@ -2419,7 +2419,7 @@ static __genl_const struct genl_ops nl802154_ops[] = {
 		.internal_flags = NL802154_FLAG_NEED_NETDEV |
 				  NL802154_FLAG_NEED_RTNL,
 	},
-#endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+#endif /* CONFIG_BACKPORT_IEEE802154_NL802154_EXPERIMENTAL */
 };
 
 /* initialisation/exit functions */

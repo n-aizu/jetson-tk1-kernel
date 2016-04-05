@@ -69,7 +69,7 @@ struct iwl_mvm_tof_data {
 	struct iwl_tof_config_cmd tof_cfg;
 	struct iwl_tof_range_req_cmd range_req;
 	struct iwl_tof_range_req_ext_cmd range_req_ext;
-#ifdef CONFIG_IWLWIFI_DEBUGFS
+#ifdef CONFIG_BACKPORT_IWLWIFI_DEBUGFS
 	struct iwl_tof_responder_config_cmd responder_cfg;
 #endif
 	struct iwl_tof_range_rsp_ntfy range_resp;
@@ -87,7 +87,7 @@ void iwl_mvm_tof_resp_handler(struct iwl_mvm *mvm,
 			      struct iwl_rx_cmd_buffer *rxb);
 int iwl_mvm_tof_range_request_ext_cmd(struct iwl_mvm *mvm,
 				      struct ieee80211_vif *vif);
-#ifdef CONFIG_IWLWIFI_DEBUGFS
+#ifdef CONFIG_BACKPORT_IWLWIFI_DEBUGFS
 int iwl_mvm_tof_responder_cmd(struct iwl_mvm *mvm,
 			      struct ieee80211_vif *vif);
 #endif

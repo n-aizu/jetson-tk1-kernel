@@ -125,7 +125,7 @@ int ath6kl_read_tgt_stats(struct ath6kl *ar, struct ath6kl_vif *vif)
 }
 EXPORT_SYMBOL(ath6kl_read_tgt_stats);
 
-#ifdef CONFIG_ATH6KL_DEBUG
+#ifdef CONFIG_BACKPORT_ATH6KL_DEBUG
 
 void ath6kl_dbg(enum ATH6K_DEBUG_MASK mask, const char *fmt, ...)
 {

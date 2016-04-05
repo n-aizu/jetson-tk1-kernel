@@ -1046,7 +1046,7 @@ static int ov2659_get_fmt(struct v4l2_subdev *sd,
 	dev_dbg(&client->dev, "ov2659_get_fmt\n");
 
 	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
+#ifdef CONFIG_BACKPORT_VIDEO_V4L2_SUBDEV_API
 		struct v4l2_mbus_framefmt *mf;
 
 		mf = v4l2_subdev_get_try_format(sd, cfg, 0);
@@ -1127,7 +1127,7 @@ static int ov2659_set_fmt(struct v4l2_subdev *sd,
 	mutex_lock(&ov2659->lock);
 
 	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
+#ifdef CONFIG_BACKPORT_VIDEO_V4L2_SUBDEV_API
 		mf = v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
 		*mf = fmt->format;
 #else
@@ -1262,7 +1262,7 @@ static const char * const ov2659_test_pattern_menu[] = {
  * V4L2 subdev internal operations
  */
 
-#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
+#ifdef CONFIG_BACKPORT_VIDEO_V4L2_SUBDEV_API
 static int ov2659_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
 {
 	struct i2c_client *client = v4l2_get_subdevdata(sd);
@@ -1294,7 +1294,7 @@ static const struct v4l2_subdev_pad_ops ov2659_subdev_pad_ops = {
 	.set_fmt = ov2659_set_fmt,
 };
 
-#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
+#ifdef CONFIG_BACKPORT_VIDEO_V4L2_SUBDEV_API
 static const struct v4l2_subdev_ops ov2659_subdev_ops = {
 	.core  = &ov2659_subdev_core_ops,
 	.video = &ov2659_subdev_video_ops,
@@ -1435,7 +1435,7 @@ static int ov2659_probe(struct i2c_client *client,
 
 	sd = &ov2659->sd;
 	client->flags |= I2C_CLIENT_SCCB;
-#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
+#ifdef CONFIG_BACKPORT_VIDEO_V4L2_SUBDEV_API
 	v4l2_i2c_subdev_init(sd, client, &ov2659_subdev_ops);
 
 	sd->internal_ops = &ov2659_subdev_internal_ops;
@@ -1443,7 +1443,7 @@ static int ov2659_probe(struct i2c_client *client,
 		     V4L2_SUBDEV_FL_HAS_EVENTS;
 #endif
 
-#if defined(CONFIG_MEDIA_CONTROLLER)
+#if defined(CONFIG_BACKPORT_MEDIA_CONTROLLER)
 	ov2659->pad.flags = MEDIA_PAD_FL_SOURCE;
 	sd->entity.type = MEDIA_ENT_T_V4L2_SUBDEV_SENSOR;
 	ret = media_entity_init(&sd->entity, 1, &ov2659->pad, 0);
@@ -1476,7 +1476,7 @@ static int ov2659_probe(struct i2c_client *client,
 
 error:
 	v4l2_ctrl_handler_free(&ov2659->ctrls);
-#if defined(CONFIG_MEDIA_CONTROLLER)
+#if defined(CONFIG_BACKPORT_MEDIA_CONTROLLER)
 	media_entity_cleanup(&sd->entity);
 #endif
 	mutex_destroy(&ov2659->lock);
@@ -1490,7 +1490,7 @@ static int ov2659_remove(struct i2c_client *client)
 
 	v4l2_ctrl_handler_free(&ov2659->ctrls);
 	v4l2_async_unregister_subdev(sd);
-#if defined(CONFIG_MEDIA_CONTROLLER)
+#if defined(CONFIG_BACKPORT_MEDIA_CONTROLLER)
 	media_entity_cleanup(&sd->entity);
 #endif
 	mutex_destroy(&ov2659->lock);

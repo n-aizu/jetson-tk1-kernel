@@ -317,7 +317,7 @@ struct ath10k_sta {
 
 	struct work_struct update_wk;
 
-#ifdef CONFIG_MAC80211_DEBUGFS
+#ifdef CONFIG_BACKPORT_MAC80211_DEBUGFS
 	/* protected by conf_mutex */
 	bool aggr_mode;
 #endif
@@ -812,7 +812,7 @@ struct ath10k {
 
 	unsigned long tx_paused; /* see ATH10K_TX_PAUSE_ */
 
-#ifdef CONFIG_ATH10K_DEBUGFS
+#ifdef CONFIG_BACKPORT_ATH10K_DEBUGFS
 	struct ath10k_debug debug;
 #endif
 

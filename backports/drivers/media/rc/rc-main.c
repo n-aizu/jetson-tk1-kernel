@@ -834,7 +834,7 @@ struct rc_filter_attribute {
 
 static bool lirc_is_present(void)
 {
-#if defined(CONFIG_LIRC_MODULE)
+#if defined(CONFIG_BACKPORT_LIRC_MODULE)
 	struct module *lirc;
 
 	mutex_lock(&module_mutex);
@@ -842,7 +842,7 @@ static bool lirc_is_present(void)
 	mutex_unlock(&module_mutex);
 
 	return lirc ? true : false;
-#elif defined(CONFIG_LIRC)
+#elif defined(CONFIG_BACKPORT_LIRC)
 	return true;
 #else
 	return false;

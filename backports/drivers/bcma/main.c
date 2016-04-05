@@ -359,7 +359,7 @@ static int bcma_register_devices(struct bcma_bus *bus)
 		bcma_register_core(bus, core);
 	}
 
-#ifdef CONFIG_BCMA_DRIVER_MIPS
+#ifdef CONFIG_BACKPORT_BCMA_DRIVER_MIPS
 	if (bus->drv_cc.pflash.present) {
 		err = platform_device_register(&bcma_pflash_dev);
 		if (err)
@@ -367,7 +367,7 @@ static int bcma_register_devices(struct bcma_bus *bus)
 	}
 #endif
 
-#ifdef CONFIG_BCMA_SFLASH
+#ifdef CONFIG_BACKPORT_BCMA_SFLASH
 	if (bus->drv_cc.sflash.present) {
 		err = platform_device_register(&bcma_sflash_dev);
 		if (err)
@@ -375,7 +375,7 @@ static int bcma_register_devices(struct bcma_bus *bus)
 	}
 #endif
 
-#ifdef CONFIG_BCMA_NFLASH
+#ifdef CONFIG_BACKPORT_BCMA_NFLASH
 	if (bus->drv_cc.nflash.present) {
 		err = platform_device_register(&bcma_nflash_dev);
 		if (err)
@@ -691,7 +691,7 @@ static int __init bcma_modinit(void)
 		pr_err("SoC host initialization failed\n");
 		err = 0;
 	}
-#ifdef CONFIG_BCMA_HOST_PCI
+#ifdef CONFIG_BACKPORT_BCMA_HOST_PCI
 	err = bcma_host_pci_init();
 	if (err) {
 		pr_err("PCI host initialization failed\n");
@@ -705,7 +705,7 @@ fs_initcall(bcma_modinit);
 
 static void __exit bcma_modexit(void)
 {
-#ifdef CONFIG_BCMA_HOST_PCI
+#ifdef CONFIG_BACKPORT_BCMA_HOST_PCI
 	bcma_host_pci_exit();
 #endif
 	bcma_host_soc_unregister_driver();

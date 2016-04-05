@@ -250,7 +250,7 @@ void iwl_scan_cancel_timeout(struct iwl_priv *priv, unsigned long ms)
 static void iwl_rx_reply_scan(struct iwl_priv *priv,
 			      struct iwl_rx_cmd_buffer *rxb)
 {
-#ifdef CONFIG_IWLWIFI_DEBUG
+#ifdef CONFIG_BACKPORT_IWLWIFI_DEBUG
 	struct iwl_rx_packet *pkt = rxb_addr(rxb);
 	struct iwl_scanreq_notification *notif = (void *)pkt->data;
 
@@ -280,7 +280,7 @@ static void iwl_rx_scan_start_notif(struct iwl_priv *priv,
 static void iwl_rx_scan_results_notif(struct iwl_priv *priv,
 				      struct iwl_rx_cmd_buffer *rxb)
 {
-#ifdef CONFIG_IWLWIFI_DEBUG
+#ifdef CONFIG_BACKPORT_IWLWIFI_DEBUG
 	struct iwl_rx_packet *pkt = rxb_addr(rxb);
 	struct iwl_scanresults_notification *notif = (void *)pkt->data;
 

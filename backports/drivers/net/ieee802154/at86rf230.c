@@ -663,7 +663,7 @@ at86rf230_tx_trac_check(void *context)
 	struct at86rf230_state_change *ctx = context;
 	struct at86rf230_local *lp = ctx->lp;
 
-	if (IS_ENABLED(CONFIG_IEEE802154_AT86RF230_DEBUGFS)) {
+	if (IS_ENABLED(CONFIG_BACKPORT_IEEE802154_AT86RF230_DEBUGFS)) {
 		u8 trac = TRAC_MASK(ctx->buf[1]);
 
 		switch (trac) {
@@ -727,7 +727,7 @@ at86rf230_rx_trac_check(void *context)
 	u8 *buf = ctx->buf;
 	int rc;
 
-	if (IS_ENABLED(CONFIG_IEEE802154_AT86RF230_DEBUGFS)) {
+	if (IS_ENABLED(CONFIG_BACKPORT_IEEE802154_AT86RF230_DEBUGFS)) {
 		u8 trac = TRAC_MASK(buf[1]);
 
 		switch (trac) {
@@ -943,7 +943,7 @@ at86rf230_start(struct ieee802154_hw *hw)
 	struct at86rf230_local *lp = hw->priv;
 
 	/* reset trac stats on start */
-	if (IS_ENABLED(CONFIG_IEEE802154_AT86RF230_DEBUGFS))
+	if (IS_ENABLED(CONFIG_BACKPORT_IEEE802154_AT86RF230_DEBUGFS))
 		memset(&lp->trac, 0, sizeof(struct at86rf230_trac));
 
 	at86rf230_awake(lp);
@@ -1605,7 +1605,7 @@ not_supp:
 	return rc;
 }
 
-#ifdef CONFIG_IEEE802154_AT86RF230_DEBUGFS
+#ifdef CONFIG_BACKPORT_IEEE802154_AT86RF230_DEBUGFS
 static struct dentry *at86rf230_debugfs_root;
 
 static int at86rf230_stats_show(struct seq_file *file, void *offset)
