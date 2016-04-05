@@ -6626,7 +6626,11 @@ static void igb_reuse_rx_page(struct igb_ring *rx_ring,
 
 static inline bool igb_page_is_reserved(struct page *page)
 {
-	return (page_to_nid(page) != numa_mem_id()) || page_is_pfmemalloc(page);
+	return (page_to_nid(page) != numa_mem_id())
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,6,0)
+ || page_is_pfmemalloc(page)
+#endif /* if LINUX_VERSION_CODE >= KERNEL_VERSION(3,6,0) */
+;
 }
 
 static bool igb_can_reuse_rx_page(struct igb_rx_buffer *rx_buffer,
