@@ -26,6 +26,7 @@
 
 struct wpan_phy;
 struct wpan_phy_cca;
+struct wpan_dev;
 
 #ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
 struct ieee802154_llsec_device_key;
