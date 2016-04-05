@@ -29,7 +29,9 @@
 #include <linux/wait.h>
 #include <linux/tty.h>
 #include <linux/platform_device.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,13,0)
 #include <linux/gpio/consumer.h>
+#endif
 #include <linux/acpi.h>
 #include <linux/interrupt.h>
 #include <linux/pm_runtime.h>
@@ -379,7 +381,9 @@ static int intel_set_power(struct hci_uart *hu, bool powered)
 		BT_INFO("hu %p, Switching compatible pm device (%s) to %u",
 			hu, dev_name(&idev->pdev->dev), powered);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,13,0)
 		gpiod_set_value(idev->reset, powered);
+#endif
 
 		/* Provide to idev a hu reference which is used to run LPM
 		 * transactions (lpm suspend/resume) from PM callbacks.
@@ -1330,14 +1334,17 @@ static int intel_probe(struct platform_device *pdev)
 
 	idev->pdev = pdev;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 	idev->reset = devm_gpiod_get_optional(&pdev->dev, "reset",
 					      GPIOD_OUT_LOW);
 	if (IS_ERR(idev->reset)) {
 		dev_err(&pdev->dev, "Unable to retrieve gpio\n");
 		return PTR_ERR(idev->reset);
 	}
+#endif
 
 	idev->irq = platform_get_irq(pdev, 0);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 	if (idev->irq < 0) {
 		struct gpio_desc *host_wake;
 
@@ -1356,12 +1363,15 @@ static int intel_probe(struct platform_device *pdev)
 			goto no_irq;
 		}
 	}
+#endif
 
 	/* Only enable wake-up/irq when controller is powered */
 	device_set_wakeup_capable(&pdev->dev, true);
 	device_wakeup_disable(&pdev->dev);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 no_irq:
+#endif
 	platform_set_drvdata(pdev, idev);
 
 	/* Place this instance on the device list */
@@ -1369,8 +1379,10 @@ no_irq:
 	list_add_tail(&idev->list, &intel_device_list);
 	mutex_unlock(&intel_device_list_lock);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,13,0)
 	dev_info(&pdev->dev, "registered, gpio(%d)/irq(%d).\n",
 		 desc_to_gpio(idev->reset), idev->irq);
+#endif
 
 	return 0;
 }
